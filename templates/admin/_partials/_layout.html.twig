@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/admin.css') }}">
+{% endblock %}
+
+{% block importmap %}{{ importmap(['app', 'admin']) }}{% endblock %}
+
+{% block body %}
+    <div class="admin-layout">
+        <nav class="admin-sidebar">
+            <ul>
+                <li><a href="{{ path('admin_dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ path('admin_game_index') }}">Blind tests</a></li>
+            </ul>
+        </nav>
+        <main class="admin-content">
+            <div id="admin-toast-container" class="admin-toast-container">
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="admin-toast admin-toast--{{ label }}" data-auto-dismiss="5000">
+                            <span class="admin-toast__message">{{ message }}</span>
+                            <button type="button" class="admin-toast__close js-close-flash" aria-label="Fermer">✕</button>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+
+            {% block admin_body %}{% endblock %}
+        </main>
+    </div>
+{% endblock %}

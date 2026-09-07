@@ -1,0 +1,160 @@
+:root {
+    --color-bg: #1d192e;
+    --color-bg-elevated: #272143;
+    --color-text: #ece8fa;
+    --color-muted: #b3a9d1;
+    --color-accent: #f2b807;
+    --color-accent-ink: #241b02;
+    --font-display: 'Agbalumo', system-ui, sans-serif;
+    --font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+*, ::before, ::after {
+    box-sizing: border-box;
+    font-family: var(--font-body);
+    margin: 0;
+    padding: 0;
+}
+
+/* Garantit que l'attribut hidden masque toujours l'élément, même quand une
+   autre règle (display: flex, inline-flex...) s'applique par ailleurs. */
+[hidden] {
+    display: none !important;
+}
+
+html, body {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+.page {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
+/* En-tête / menu principal */
+.site-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background-color: var(--color-bg-elevated);
+}
+
+.main-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    list-style: none;
+}
+
+.main-nav a {
+    color: var(--color-muted);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.main-nav a:hover,
+.main-nav a:focus-visible {
+    color: var(--color-accent);
+}
+
+.main-nav a:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.85rem 2rem;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn--primary {
+    background-color: var(--color-accent);
+    color: var(--color-accent-ink);
+}
+
+.btn--primary:hover,
+.btn--primary:focus-visible {
+    background-color: #ffcc33;
+}
+
+.btn--primary:focus-visible {
+    outline: 2px solid var(--color-text);
+    outline-offset: 3px;
+}
+
+.btn--secondary {
+    background-color: var(--color-bg-elevated);
+    color: var(--color-text);
+}
+
+.btn--secondary:hover,
+.btn--secondary:focus-visible {
+    background-color: #352c5c;
+}
+
+.btn--danger {
+    background-color: transparent;
+    color: #e5787a;
+    border: 1px solid #e5787a;
+}
+
+.btn--danger:hover,
+.btn--danger:focus-visible {
+    background-color: #e5787a;
+    color: var(--color-bg);
+}
+
+.btn--small {
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+}
+
+/* Page d'accueil */
+.hero {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    gap: 1.25rem;
+}
+
+.hero__title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 10vw, 4rem);
+    font-weight: 400;
+    color: var(--color-accent);
+    line-height: 1.1;
+}
+
+.hero__tagline {
+    max-width: 32ch;
+    font-size: 1.1rem;
+    color: var(--color-text);
+}
+
+.hero__text {
+    max-width: 40ch;
+    font-size: 0.95rem;
+    color: var(--color-muted);
+    line-height: 1.5;
+}
+
+.hero__cta {
+    margin: 0.5rem 0 0;
+}

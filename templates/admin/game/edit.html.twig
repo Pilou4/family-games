@@ -1,0 +1,25 @@
+{% extends 'admin/_partials/_layout.html.twig' %}
+
+{% block title %}Modifier {{ blindTest.name }} — Administration{% endblock %}
+
+{% block admin_body %}
+    <h1 class="admin-title">Modifier {{ blindTest.name }}</h1>
+    {% include 'admin/game/_form.html.twig' %}
+
+    <div class="admin-back-row">
+        <a href="{{ path('admin_game_index') }}" class="btn btn--secondary">← Retour à la liste</a>
+    </div>
+
+    <script type="application/json" id="existing-questions-data">
+        {{ blindTest.questions|map(q => {
+            id: q.id,
+            title: q.title,
+            artist: q.artist,
+            year: q.year,
+            source: q.source,
+            youtubeId: q.youtubeId,
+            mp3Path: q.mp3Path,
+            startTime: q.startTime,
+        })|json_encode|raw }}
+    </script>
+{% endblock %}

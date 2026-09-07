@@ -1,0 +1,74 @@
+{% extends 'admin/_partials/_layout.html.twig' %}
+
+{% block title %}Blind tests — Administration{% endblock %}
+
+{% block admin_body %}
+    <div class="admin__header">
+        <h1 class="admin-title">Blind tests</h1>
+        <a href="{{ path('admin_game_new') }}" class="btn btn--primary">Nouveau blind test</a>
+    </div>
+
+    {% if blindTests is empty %}
+        <p>Aucun blind test pour l'instant.</p>
+    {% else %}
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Description</th>
+                    <th>Morceaux</th>
+                    <th>Durée/extrait</th>
+                    <th>Durée totale</th>
+                    <th>Créé le</th>
+                    <th class="admin-table__actions-header">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for blindTest in blindTests %}
+                    <tr
+                        class="js-blindtest-row"
+                        data-blindtest-id="{{ blindTest.id }}"
+                        data-csrf-edit="{{ csrf_token('edit-blind-test-' ~ blindTest.id) }}"
+                    >
+                        <td>
+                            <span class="admin-editable js-editable-field" data-field="name" tabindex="0">{{ blindTest.name }}</span>
+                            <p class="admin-form-field__error js-field-error" hidden></p>
+                        </td>
+                        <td>
+                            <span class="admin-editable js-editable-field" data-field="description" tabindex="0">{{ blindTest.description }}</span>
+                            <p class="admin-form-field__error js-field-error" hidden></p>
+                        </td>
+                        <td class="js-questions-count">{{ blindTest.questions|length }}</td>
+                        <td>
+                            <input type="number" class="admin-inline-number js-duration-input" value="{{ blindTest.duration }}" min="5" max="30">
+                        </td>
+                        <td class="js-total-duration">{{ blindTest.questions|length * (blindTest.duration + 5) }}s</td>
+                        <td>{{ blindTest.createdAt ? blindTest.createdAt|date('d/m/Y') : '' }}</td>
+                        <td class="admin-table__actions admin-table__actions--right">
+                            {% if blindTest.questions|length > 0 %}
+                                <a href="{{ path('game_play', {gameId: blindTest.id}) }}?preview=1" class="admin-icon-btn" title="Jouer" aria-label="Jouer">
+                                    {{ inline_svg('images/icones/play.svg') }}
+                                </a>
+                            {% endif %}
+                            <a href="{{ path('admin_game_edit', {id: blindTest.id}) }}" class="admin-icon-btn" title="Modifier" aria-label="Modifier">
+                                {{ inline_svg('images/icones/edit.svg') }}
+                            </a>
+                            <form
+                                method="post"
+                                action="{{ path('admin_game_delete', {id: blindTest.id}) }}"
+                                class="js-ajax-delete-blindtest"
+                                data-blindtest-id="{{ blindTest.id }}"
+                                data-confirm="Supprimer ce blind test ?"
+                            >
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete-blind-test-' ~ blindTest.id) }}">
+                                <button type="submit" class="admin-icon-btn admin-icon-btn--danger" title="Supprimer" aria-label="Supprimer">
+                                    {{ inline_svg('images/icones/trash.svg') }}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

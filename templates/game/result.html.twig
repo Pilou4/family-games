@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Blind test terminé — {{ blindTest.name }}{% endblock %}
+
+{% block body %}
+    <main class="page">
+        <section class="game game--result">
+            <div class="game-card game-card--center">
+                <h1 class="game-result-title">🎉 Blind test terminé</h1>
+                <p class="game__meta">{{ blindTest.name }}</p>
+                <div class="game-btn-row game-btn-row--center">
+                    <a href="{{ path('home') }}" class="btn btn--primary">Retour à l'accueil</a>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}

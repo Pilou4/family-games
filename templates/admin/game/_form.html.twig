@@ -1,0 +1,137 @@
+<div class="admin-info-box">
+    Utilise obligatoirement des morceaux en <strong>MP3 local</strong> si tu comptes enregistrer le blind test en vidéo : le son de YouTube ne peut pas être capturé dans l'enregistrement (limite de sécurité du navigateur). YouTube fonctionne normalement pendant une partie jouée en direct.
+</div>
+
+<div class="admin-total-duration-box" id="total-duration-box">
+    Durée du blind test : <strong id="total-duration-value">0s</strong>
+</div>
+
+{{ form_start(form, {attr: {class: 'admin-form', enctype: 'multipart/form-data'}}) }}
+    <div class="admin-form-field" data-field-name="name">
+        <label for="{{ form.name.vars.id }}">Nom du blind test</label>
+        {{ form_widget(form.name) }}
+        <p class="admin-form-field__error" {{ form.name.vars.errors|length == 0 ? 'hidden' : '' }}>{{ form.name.vars.errors[0].message ?? '' }}</p>
+    </div>
+
+    <div class="admin-form-field" data-field-name="description">
+        <label for="{{ form.description.vars.id }}">Description</label>
+        {{ form_widget(form.description) }}
+        <p class="admin-form-field__error" {{ form.description.vars.errors|length == 0 ? 'hidden' : '' }}>{{ form.description.vars.errors[0].message ?? '' }}</p>
+    </div>
+
+    <div class="admin-form-field" data-field-name="requiredFields" id="required-fields-group">
+        <label>
+            Ce qu'il faut deviner
+            <span class="tooltip">
+                <span class="help-icon">?</span>
+                <span class="tooltip__content">Coche au moins un critère. Chaque case cochée devient obligatoire pour tous les morceaux du blind test.</span>
+            </span>
+        </label>
+        <div class="admin-checkbox-group">
+            {% for value, label in constant('App\\Entity\\BlindTest::AVAILABLE_REQUIRED_FIELDS') %}
+                <label class="admin-checkbox">
+                    <input
+                        type="checkbox"
+                        name="blind_test[requiredFields][]"
+                        value="{{ value }}"
+                        {{ value in blindTest.requiredFields ? 'checked' : '' }}
+                    >
+                    {{ label }}
+                </label>
+            {% endfor %}
+        </div>
+        <p class="admin-form-field__error" {{ form.requiredFields.vars.errors|length == 0 ? 'hidden' : '' }}>{{ form.requiredFields.vars.errors[0].message ?? '' }}</p>
+    </div>
+
+    <div class="admin-form-field--narrow admin-form-field" data-field-name="duration">
+        <label for="{{ form.duration.vars.id }}">
+            Durée (s)
+            <span class="tooltip">
+                <span class="help-icon">?</span>
+                <span class="tooltip__content">Durée des extraits en secondes (entre 5 et 30), commune à tous les morceaux de ce blind test.</span>
+            </span>
+        </label>
+        {{ form_widget(form.duration) }}
+        <p class="admin-form-field__error" {{ form.duration.vars.errors|length == 0 ? 'hidden' : '' }}>{{ form.duration.vars.errors[0].message ?? '' }}</p>
+    </div>
+
+    <div id="question-fieldset-container"></div>
+
+    <div class="admin-btn-row admin-btn-row--spaced">
+        <button type="button" class="btn btn--secondary js-add-question-btn">Ajouter un titre</button>
+        <button type="submit" class="btn btn--primary">Enregistrer</button>
+    </div>
+    {{ form_widget(form._token) }}
+{{ form_end(form, {render_rest: false}) }}
+
+<template id="question-fieldset-template">
+    <div class="admin-card admin-card--new-question">
+        <button type="button" class="question-fieldset__remove-btn js-remove-question-btn" title="Retirer ce titre" aria-label="Retirer ce titre">✕</button>
+        <input type="hidden" class="js-field-id" value="">
+        <div class="question-fieldset">
+            <div class="question-fieldset__row question-fieldset__row--3">
+                <div class="question-fieldset__field">
+                    <span class="question-fieldset__label">Titre</span>
+                    <input type="text" class="js-field-title">
+                    <p class="question-fieldset__error" hidden></p>
+                </div>
+                <div class="question-fieldset__field">
+                    <span class="question-fieldset__label">Artiste</span>
+                    <input type="text" class="js-field-artist">
+                    <p class="question-fieldset__error" hidden></p>
+                </div>
+                <div class="question-fieldset__field">
+                    <span class="question-fieldset__label">Année</span>
+                    <input type="number" class="js-field-year">
+                    <p class="question-fieldset__error" hidden></p>
+                </div>
+            </div>
+
+            <div class="question-fieldset__row question-fieldset__row--2">
+                <div class="question-fieldset__field">
+                    <span class="question-fieldset__label">Source</span>
+                    <select class="js-field-source">
+                        <option value="mp3">MP3 local</option>
+                        <option value="youtube">YouTube</option>
+                    </select>
+                    <p class="question-fieldset__error" hidden></p>
+                </div>
+                <div class="question-fieldset__field js-field-youtube-wrapper" hidden>
+                    <span class="question-fieldset__label">Identifiant YouTube</span>
+                    <input type="text" class="js-field-youtube-id">
+                    <p class="question-fieldset__error" hidden></p>
+                </div>
+                <div class="question-fieldset__field js-field-mp3-wrapper">
+                    <span class="question-fieldset__label">Fichier MP3</span>
+                    <input type="file" class="js-field-mp3-file" accept="audio/mpeg">
+                    <p class="question-fieldset__error" hidden></p>
+                </div>
+            </div>
+
+            <div class="question-fieldset__row question-fieldset__row--start-preview">
+                <div class="question-fieldset__field question-fieldset__field--narrow">
+                    <span class="question-fieldset__label">Départ (s)</span>
+                    <input type="number" class="js-field-start-time" value="0">
+                    <p class="question-fieldset__error" hidden></p>
+                </div>
+
+                <div class="question-fieldset__preview js-mp3-preview" hidden>
+                    <audio controls class="js-mp3-audio"></audio>
+                    <button type="button" class="btn btn--secondary btn--small js-use-current-time-btn">Utiliser cette position</button>
+                </div>
+
+                <div class="question-fieldset__preview js-youtube-preview" hidden>
+                    <button type="button" class="btn btn--secondary btn--small js-open-youtube-modal-btn">▶ Voir la vidéo (pour repérer le départ)</button>
+                </div>
+            </div>
+
+            <dialog class="admin-dialog js-youtube-dialog">
+                <div class="admin-dialog__header">
+                    <button type="button" class="btn-link js-close-youtube-dialog-btn">✕ Fermer</button>
+                </div>
+                <iframe class="admin-dialog__iframe js-youtube-iframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </dialog>
+
+        </div>
+    </div>
+</template>

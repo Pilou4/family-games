@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Family Games — Blind test en famille{% endblock %}
+
+{% block body %}
+    <main class="page">
+        <section class="hero">
+            <h1 class="hero__title">Family Games</h1>
+            <p class="hero__tagline">Le blind test qui réunit toute la famille.</p>
+            <p class="hero__text">
+                Devinez les chansons, marquez des points, et créez des souvenirs
+                ensemble le temps d'une fête.
+            </p>
+            <a href="{{ path('game') }}" class="btn btn--primary hero__cta">Jouer</a>
+        </section>
+    </main>
+{% endblock %}

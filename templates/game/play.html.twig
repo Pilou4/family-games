@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ blindTest.name }}{% endblock %}
+
+{% block importmap %}{{ importmap(['app', 'game']) }}{% endblock %}
+
+{% block body %}
+    <main class="page">
+        <section class="game">
+            <p class="game__meta game__meta--invisible" id="game-meta">{{ blindTest.name }} — Morceau <span id="game-number">1</span> / {{ total }}</p>
+
+            <div class="game-card game-card--no-bottom-padding">
+                <span class="game-number-badge" id="game-number-badge" hidden><span id="game-number-badge-value">1</span> / {{ total }}</span>
+                <div class="game-player" id="game-player" data-result-url="{{ path('game_result', {gameId: blindTest.id}) }}">
+                    <div class="game-stage" id="game-stage">
+                        <img src="/images/logo.svg" alt="{{ blindTest.name }}" class="game-stage__logo" id="game-logo">
+
+                        <div class="game-welcome" id="game-welcome" hidden>
+                            <img src="/images/logo.svg" alt="" class="game-welcome__logo">
+                            <h2 class="game-welcome__title">Bienvenue sur le Blind Test</h2>
+                            <p class="game-welcome__subtitle">{{ blindTest.name }}</p>
+                        </div>
+
+                        <div class="game-rules-screen" id="game-rules-screen" hidden>
+                            <h2 class="game-rules-screen__title">Règles du jeu</h2>
+                            <ul class="game-rules-screen__list">
+                                {% for field in blindTest.requiredFields %}
+                                    <li>
+                                        {% if field == 'title' %}🎵 1 point par titre trouvé{% endif %}
+                                        {% if field == 'artist' %}🎤 1 point par artiste trouvé{% endif %}
+                                        {% if field == 'year' %}📅 1 point par année trouvée{% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <div class="game-timer-ring" id="game-timer-ring" hidden>
+                            <svg viewBox="0 0 120 120" class="game-timer-ring__svg">
+                                <circle class="game-timer-ring__track" cx="60" cy="60" r="54"></circle>
+                                <circle class="game-timer-ring__progress" id="game-timer-progress" cx="60" cy="60" r="54"></circle>
+                            </svg>
+                            <span class="game-timer-ring__label" id="game-timer">--</span>
+                        </div>
+
+                        <div class="game-reveal" id="game-reveal" hidden>
+                            <p id="game-reveal-artist-row">Artiste : <strong id="game-reveal-artist"></strong></p>
+                            <p id="game-reveal-title-row">Titre : <strong id="game-reveal-title"></strong></p>
+                            <p id="game-reveal-year-row">Année : <strong id="game-reveal-year"></strong></p>
+                        </div>
+                    </div>
+
+                    <div id="youtube-target" class="game-player__yt-target"></div>
+                    <audio id="game-audio" preload="none"></audio>
+                </div>
+
+                <div class="game-admin-bar" id="game-admin-bar" hidden>
+                    <button type="button" class="game-admin-bar__btn" id="game-prev-btn" title="Morceau précédent" aria-label="Morceau précédent">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+                    </button>
+                    <button type="button" class="game-admin-bar__btn" id="game-pause-btn" title="Pause" aria-label="Pause">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" id="game-pause-icon"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>
+                    </button>
+                    <button type="button" class="game-admin-bar__btn" id="game-next-btn" title="Morceau suivant" aria-label="Morceau suivant">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6z"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="game-controls">
+                <button type="button" class="btn btn--primary" id="game-start-btn">▶ Lancer le blind test</button>
+                {% if isPreview %}
+                    <button type="button" class="btn btn--secondary" id="game-record-btn">⏺ Enregistrer</button>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+
+    <script type="application/json" id="game-tracks-data">{{ tracks|json_encode|raw }}</script>
+{% endblock %}

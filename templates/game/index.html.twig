@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jeu — Family Games{% endblock %}
+
+{% block body %}
+    <main class="page">
+        <section class="game">
+            <h1 class="game-list__heading">Choisis un blind test</h1>
+
+            {% if blindTests is empty %}
+                <p class="game__meta">Aucun blind test n'est disponible pour l'instant.</p>
+            {% else %}
+                <div class="game-list">
+                    {% for blindTest in blindTests %}
+                        <div class="game-card game-list__item">
+                            <h2 class="game-list__title">{{ blindTest.name }}</h2>
+                            {% if blindTest.description %}
+                                <p class="game__meta">{{ blindTest.description }}</p>
+                            {% endif %}
+                            <a href="{{ path('game_play', {gameId: blindTest.id}) }}" class="btn btn--primary">Jouer</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </section>
+    </main>
+{% endblock %}

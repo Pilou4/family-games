@@ -1,0 +1,133 @@
+{% extends 'admin/_partials/_layout.html.twig' %}
+
+{% block title %}{{ blindTest.name }} — Administration{% endblock %}
+
+{% block admin_body %}
+    <p><a href="{{ path('admin_game_index') }}" class="admin-table__link">← Tous les blind tests</a></p>
+
+    <div class="admin__header">
+        <div>
+            <h1 class="admin-title">{{ blindTest.name }}</h1>
+            {% if blindTest.description %}
+                <p class="admin-muted">{{ blindTest.description }}</p>
+            {% endif %}
+        </div>
+        <div class="admin-btn-row">
+            {% if blindTest.questions|length > 0 %}
+                <a href="{{ path('game_play', {gameId: blindTest.id}) }}?preview=1" class="btn btn--primary">Jouer</a>
+            {% endif %}
+            <a href="{{ path('admin_game_edit', {id: blindTest.id}) }}" class="btn btn--secondary">Modifier</a>
+            <form
+                method="post"
+                action="{{ path('admin_game_delete', {id: blindTest.id}) }}"
+                data-confirm="Supprimer ce blind test et toutes ses questions ?"
+            >
+                <input type="hidden" name="_token" value="{{ csrf_token('delete-blind-test-' ~ blindTest.id) }}">
+                <button type="submit" class="btn btn--danger">Supprimer</button>
+            </form>
+        </div>
+    </div>
+
+    <h2 class="admin-subtitle">Morceaux ({{ blindTest.questions|length }}) — extraits de {{ blindTest.duration }}s</h2>
+    <div class="admin-btn-row">
+        <button
+            type="button"
+            class="btn btn--secondary js-add-question-btn"
+            data-blindtest-id="{{ blindTest.id }}"
+            data-csrf="{{ csrf_token('create-question-' ~ blindTest.id) }}"
+        >+ Ajouter un morceau</button>
+    </div>
+
+    <div id="admin-new-question-container"></div>
+
+    <template id="question-form-template">
+        <div class="admin-card admin-card--new-question">
+            <div class="admin-form">
+                <label>
+                    Artiste
+                    <input type="text" class="js-field-artist" required>
+                </label>
+                <label>
+                    Titre
+                    <input type="text" class="js-field-title" required>
+                </label>
+                <label>
+                    Année
+                    <input type="number" class="js-field-year">
+                </label>
+                <label>
+                    Source
+                    <select class="js-field-source">
+                        <option value="youtube">YouTube</option>
+                        <option value="mp3">MP3 local</option>
+                    </select>
+                </label>
+                <label class="js-field-youtube-wrapper">
+                    Identifiant YouTube
+                    <input type="text" class="js-field-youtube-id">
+                </label>
+                <label class="js-field-mp3-wrapper" hidden>
+                    Fichier MP3
+                    <input type="file" class="js-field-mp3-file" accept="audio/mpeg">
+                </label>
+                <label>
+                    Départ de l'extrait (secondes)
+                    <input type="number" class="js-field-start-time" value="0">
+                </label>
+                <p class="js-error admin-muted" hidden></p>
+                <div class="admin-btn-row">
+                    <button type="button" class="btn btn--primary js-save-btn">Enregistrer</button>
+                    <button type="button" class="btn btn--secondary js-cancel-btn">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    {% if blindTest.questions is empty %}
+        <div class="admin-card">
+            <p class="admin-muted">Pas encore de morceau. Ajoutes-en un !</p>
+        </div>
+    {% endif %}
+
+    {% for question in blindTest.questions %}
+        <div class="admin-card">
+            <div class="admin-question-row">
+                <div>
+                    <span class="admin-badge">#{{ question.sortOrder }}</span>
+                    <span class="admin-badge">{{ question.source }}</span>
+                    <span class="admin-badge">{{ question.startTime }}s → {{ question.startTime + blindTest.duration }}s</span>
+                    <p class="admin-question-label">{{ question.artist }} — {{ question.title }}{% if question.year %} ({{ question.year }}){% endif %}</p>
+                    {% if question.source == 'youtube' and question.youtubeId %}
+                        <p class="admin-muted">
+                            YouTube : {{ question.youtubeId }}
+                            —
+                            <a href="https://www.youtube.com/watch?v={{ question.youtubeId }}" target="_blank" rel="noopener" class="admin-table__link">▶ Écouter le morceau entier</a>
+                        </p>
+                    {% elseif question.source == 'mp3' and question.mp3Path %}
+                        <p class="admin-muted">Fichier : {{ question.mp3Path }}</p>
+                        <audio controls preload="none" src="/{{ question.mp3Path }}" class="admin-question-audio"></audio>
+                    {% endif %}
+                </div>
+                <div class="admin-btn-row">
+                    <form method="post" action="{{ path('admin_question_move', {blindTestId: blindTest.id, id: question.id, direction: 'up'}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('move-question-' ~ question.id) }}">
+                        <button type="submit" class="btn btn--secondary btn--small">↑</button>
+                    </form>
+                    <form method="post" action="{{ path('admin_question_move', {blindTestId: blindTest.id, id: question.id, direction: 'down'}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('move-question-' ~ question.id) }}">
+                        <button type="submit" class="btn btn--secondary btn--small">↓</button>
+                    </form>
+                    <a href="{{ path('admin_question_edit', {blindTestId: blindTest.id, id: question.id}) }}" class="btn btn--secondary btn--small">Modifier</a>
+                    <form
+                        method="post"
+                        action="{{ path('admin_question_delete', {blindTestId: blindTest.id, id: question.id}) }}"
+                        data-confirm="Supprimer ce morceau ?"
+                    >
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete-question-' ~ question.id) }}">
+                        <button type="submit" class="btn btn--danger btn--small">Supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
