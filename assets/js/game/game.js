@@ -6,7 +6,7 @@ import { pauseAllTimers, resumeAllTimers } from './pausable.js';
 import { pauseCountdown, resumeCountdown } from './timer.js';
 import { pausePlayback, resumePlayback } from './playback.js';
 import {
-    fillStaticGameValues, showInitialScreen, startIntroSequence, playCurrentTrack,
+    fillStaticGameValues, showInitialScreen, enterIntroSequence,
     goToNext, goToPrevious,
 } from './screens.js';
 import { startRecording, stopRecording } from './recording.js';
@@ -48,10 +48,7 @@ function init() {
 }
 
 function beginGame() {
-    startIntroSequence(() => {
-        state.gameStarted = true;
-        playCurrentTrack();
-    });
+    enterIntroSequence();
 }
 
 /**
@@ -205,6 +202,15 @@ function bindScreenChangeSafetyNet() {
         document.querySelectorAll('audio').forEach((el) => {
             delete el.dataset.pausedByGame;
         });
+        // L'écran qui vient de s'afficher peut avoir créé, au passage,
+        // un tout nouveau minuteur pausable (ex: celui qui fera avancer
+        // tout seul cet écran) — comme state.isPaused valait encore true
+        // pile à cet instant, ce minuteur est né gelé (voir
+        // createPausableTimeout dans pausable.js). Il faut donc aussi le
+        // relâcher ici, sinon il resterait bloqué pour toujours (plus
+        // aucun bouton "lecture" à venir ne le concernerait, puisque le
+        // jeu se croit déjà "en lecture" depuis la ligne au-dessus).
+        resumeAllTimers();
     });
 }
 

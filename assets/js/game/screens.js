@@ -139,8 +139,14 @@ export function showInitialScreen() {
  * possibles à tout moment (boutons de la barre de contrôle) : les deux
  * passent par la même fonction showAt, qui annule systématiquement le
  * minuteur en attente avant de changer d'écran.
+ *
+ * startIndex permet de rentrer dans cette séquence ailleurs qu'au tout
+ * début — utilisé par goToPrevious() ci-dessous quand on recule depuis
+ * le tout premier extrait : on revient alors directement sur le DERNIER
+ * écran d'intro ("c'est parti"), tout en gardant la possibilité de
+ * continuer à reculer dans les écrans d'avant (règles, description...).
  */
-export function startIntroSequence(onComplete) {
+function startIntroSequence(onComplete, startIndex = 0) {
     const screens = getIntroScreens();
     let pendingTimer = null;
 
@@ -167,7 +173,22 @@ export function startIntroSequence(onComplete) {
         state.currentBackAction = () => showAt(index - 1);
     }
 
-    showAt(0);
+    showAt(startIndex);
+}
+
+/**
+ * Point d'entrée unique de la séquence d'intro, que ce soit pour la
+ * lancer au tout premier "Lecture" (game.js) ou pour y revenir depuis le
+ * 1er extrait (goToPrevious ci-dessous) — une seule et même définition
+ * de "que se passe-t-il une fois l'intro terminée" (state.gameStarted
+ * repasse à true, le 1er extrait démarre), pour ne jamais avoir deux
+ * endroits à tenir synchronisés.
+ */
+export function enterIntroSequence(startIndex = 0) {
+    startIntroSequence(() => {
+        state.gameStarted = true;
+        playCurrentTrack();
+    }, startIndex);
 }
 
 /**
@@ -270,11 +291,29 @@ export function goToNext() {
 }
 
 export function goToPrevious() {
-    if (!state.gameStarted || state.currentIndex <= 0) {
+    if (!state.gameStarted) {
         return;
     }
 
     cancelPendingTrackTimers();
+
+    if (state.currentIndex <= 0) {
+        // On recule depuis le tout premier extrait : il n'y a pas de
+        // morceau "encore avant", donc on quitte la boucle des extraits
+        // pour retourner dans les écrans d'intro, directement sur le
+        // dernier d'entre eux ("c'est parti") — et on peut continuer à
+        // naviguer normalement depuis là (en arrière vers les règles/
+        // description/accueil, ou en avant pour redémarrer ce 1er
+        // extrait). gameStarted repasse à false : on n'est plus "dans"
+        // un extrait, exactement comme avant le tout premier clic sur
+        // Lecture.
+        state.gameStarted = false;
+        state.trackPlaybackActive = false;
+        stopCountdownEarly();
+        stopAllPlayback();
+        enterIntroSequence(getIntroScreens().length - 1);
+        return;
+    }
 
     state.currentIndex -= 1;
     stopCountdownEarly();
@@ -306,7 +345,22 @@ function showEndScreen() {
         }
 
         if (index < 0) {
-            index = 0;
+            // On recule depuis le tout premier écran de fin ("fin de
+            // partie") : on quitte la séquence de fin pour revenir sur
+            // le DERNIER extrait (celui qu'on vient de terminer), en le
+            // rejouant depuis sa transition — state.currentIndex pointe
+            // toujours dessus (showEndScreen() ne l'a jamais changé),
+            // donc playCurrentTrack() rejoue bien le bon morceau. Une
+            // fois reparti dans la boucle des extraits, goForward/goBack
+            // retombent naturellement sur goToNext()/goToPrevious()
+            // (currentSkipAction/currentBackAction remis à null).
+            state.currentSkipAction = null;
+            state.currentBackAction = null;
+            cancelPendingTrackTimers();
+            stopCountdownEarly();
+            stopAllPlayback();
+            playCurrentTrack();
+            return;
         }
 
         if (index >= outroScreens.length) {
