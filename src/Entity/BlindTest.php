@@ -49,6 +49,13 @@ class BlindTest
     private ?\DateTimeImmutable $created_at = null;
 
     /**
+     * NULL = thème "Défaut" (le rendu actuel, sans habillage particulier).
+     */
+    #[ORM\ManyToOne(targetEntity: Theme::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Theme $theme = null;
+
+    /**
      * @var Collection<int, Questions>
      */
     #[ORM\OneToMany(targetEntity: Questions::class, mappedBy: 'blind_test_id', cascade: ['remove'], orphanRemoval: true)]
@@ -169,5 +176,17 @@ class BlindTest
         }
 
         return $max + 1;
+    }
+
+    public function getTheme(): ?Theme
+    {
+        return $this->theme;
+    }
+
+    public function setTheme(?Theme $theme): static
+    {
+        $this->theme = $theme;
+
+        return $this;
     }
 }

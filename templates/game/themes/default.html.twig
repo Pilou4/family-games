@@ -1,0 +1,457 @@
+{# ==========================================================================
+   THÈME "NEON BEATS"
+   ========================================================================== #}
+
+{# ==========================================================================
+   PAGE 1 : PRÉSENTATION (pour nous, pas un écran du jeu)
+   ========================================================================== #}
+<section class="theme-preview-screen is-active" data-screen="presentation" data-preview-only="true">
+    <div class="theme-default-presentation">
+        <div class="theme-default-presentation-grid"></div>
+        <div class="theme-default-presentation-glow glow-one"></div>
+        <div class="theme-default-presentation-glow glow-two"></div>
+
+        <img
+            class="theme-default-presentation-vinyl"
+            src="/images/icones/neon-beats-vinyl.svg"
+            alt=""
+            aria-hidden="true"
+        >
+
+        <img
+            class="theme-default-presentation-headphones"
+            src="/images/icones/neon-beats-headphones.svg"
+            alt=""
+            aria-hidden="true"
+        >
+
+        <div class="theme-default-presentation-content">
+            <div class="theme-default-presentation-label">BLIND TEST</div>
+            <div class="theme-default-presentation-title">NEON BEATS</div>
+
+            <div class="theme-default-presentation-equalizer" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+
+            <div class="theme-default-presentation-timer">15</div>
+            <div class="theme-default-presentation-subtitle">MUSIC • LIGHTS • GAME</div>
+        </div>
+    </div>
+</section>
+
+{# ==========================================================================
+   PAGE 2 : WELCOME
+   ========================================================================== #}
+<section class="theme-preview-screen" data-screen="welcome" data-screen-duration="6500">
+    <div class="theme-default-welcome">
+        <div class="theme-default-welcome-note note-one" aria-hidden="true">♪</div>
+        <div class="theme-default-welcome-note note-two" aria-hidden="true">♫</div>
+
+        <div class="theme-default-welcome-content">
+            <div class="theme-default-welcome-label">Prêts à jouer ?</div>
+            <div class="theme-default-welcome-title">Bienvenue</div>
+            <div class="theme-default-welcome-name" data-game-value="blindtest-name">Nom du blind test</div>
+            <div class="theme-default-welcome-subtitle">La partie va commencer</div>
+        </div>
+    </div>
+</section>
+
+{# ==========================================================================
+   PAGE : DESCRIPTION (seulement si le blind test a une description —
+   sinon cet écran est sauté dans le vrai jeu, voir assets/js/game/
+   screens.js. En prévisualisation il reste toujours visible, avec un
+   texte d'exemple, pour pouvoir le positionner/styliser.)
+   ========================================================================== #}
+<section class="theme-preview-screen" data-screen="description" data-screen-duration="7000">
+    <div class="theme-default-description">
+        <div class="theme-default-description-label">À propos de ce blind test</div>
+        <p class="theme-default-description-text" data-game-value="description">Un thème pensé pour une ambiance néon et musicale — exemple de texte affiché ici si le blind test a une description.</p>
+    </div>
+</section>
+
+{# ==========================================================================
+   PAGE 3 : RULES
+   ========================================================================== #}
+<section class="theme-preview-screen" data-screen="rules" data-screen-duration="15200">
+    <div class="theme-default-rules">
+        <div class="theme-default-rules-orbit orbit-one"></div>
+        <div class="theme-default-rules-orbit orbit-two"></div>
+
+        <div class="theme-default-rules-equalizer" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+        </div>
+
+        <div class="theme-default-rules-note note-one" aria-hidden="true">♪</div>
+        <div class="theme-default-rules-note note-two" aria-hidden="true">♫</div>
+        <div class="theme-default-rules-note note-three" aria-hidden="true">♪</div>
+
+        <div class="theme-default-rules-content">
+            <div class="theme-default-rules-label">
+                <span></span>
+                AVANT DE COMMENCER
+                <span></span>
+            </div>
+
+            <h1 class="theme-default-rules-title">
+                RÈGLES
+                <strong>DU JEU</strong>
+            </h1>
+
+            <div class="theme-default-rules-line"></div>
+
+            <div class="theme-default-rules-stats">
+                <div class="theme-default-rules-stat">
+                    <span class="theme-default-rules-stat-number" data-game-value="question-count">20</span>
+                    <span class="theme-default-rules-stat-label">CHANSONS</span>
+                </div>
+
+                <div class="theme-default-rules-stat-divider"></div>
+
+                <div class="theme-default-rules-stat">
+                    <span class="theme-default-rules-stat-number" data-game-value="duration">15</span>
+                    <span class="theme-default-rules-stat-label">SECONDES PAR CHANSON</span>
+                </div>
+            </div>
+
+            <div class="theme-default-rules-points">
+                <div class="theme-default-rules-points-title">SCORING</div>
+
+                <div class="theme-default-rules-points-list">
+                    <div class="theme-default-rules-point" data-rules-point="title">
+                        <span>1 POINT POUR</span>
+                        <strong>LE TITRE</strong>
+                    </div>
+
+                    <div class="theme-default-rules-point" data-rules-point="artist">
+                        <span>1 POINT POUR</span>
+                        <strong>L'ARTISTE</strong>
+                    </div>
+
+                    <div class="theme-default-rules-point" data-rules-point="year">
+                        <span>1 POINT POUR</span>
+                        <strong>L'ANNÉE</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{# ==========================================================================
+   PAGE 4 : START
+   ========================================================================== #}
+<section class="theme-preview-screen" data-screen="start" data-screen-duration="3500">
+    <div class="theme-default-start">
+        <div class="theme-default-start-grid"></div>
+
+        <div class="theme-default-start-ring start-ring-one"></div>
+        <div class="theme-default-start-ring start-ring-two"></div>
+        <div class="theme-default-start-ring start-ring-three"></div>
+
+        <div class="theme-default-start-flash"></div>
+
+        <div class="theme-default-start-note note-one" aria-hidden="true">♪</div>
+        <div class="theme-default-start-note note-two" aria-hidden="true">♫</div>
+
+        <div class="theme-default-start-content">
+            <div class="theme-default-start-label">NEON BEATS</div>
+
+            <div class="theme-default-start-title">
+                <span>C'EST</span>
+                <strong>PARTI !!</strong>
+            </div>
+
+            <div class="theme-default-start-line"></div>
+
+            <div class="theme-default-start-subtitle">
+                QUE LA MUSIQUE COMMENCE
+            </div>
+
+            <div class="theme-default-start-equalizer" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ==========================================================================
+   PAGE 5 : TRANSITION
+   ========================================================================== #}
+<section class="theme-preview-screen" data-screen="transition" data-screen-duration="5000">
+    <div class="theme-default-transition">
+        <div class="theme-default-transition-grid"></div>
+
+        <div class="theme-default-transition-light light-one"></div>
+        <div class="theme-default-transition-light light-two"></div>
+
+        <div class="theme-default-transition-note note-one" aria-hidden="true">♪</div>
+        <div class="theme-default-transition-note note-two" aria-hidden="true">♫</div>
+
+        <div class="theme-default-transition-content">
+            <div class="theme-default-transition-kicker">
+                prochain extrait
+            </div>
+
+            <div class="theme-default-transition-main">
+                <span class="theme-default-transition-main-label">
+                    extrait numéro
+                </span>
+
+                <strong class="theme-default-transition-number" data-game-value="track-number">12</strong>
+            </div>
+
+            <div class="theme-default-transition-line"></div>
+
+            <div class="theme-default-transition-subtitle">
+                préparez-vous
+            </div>
+        </div>
+    </div>
+</section>
+{# ==========================================================================
+   PAGE 6 : TIMER
+   ========================================================================== #}
+<section class="theme-preview-screen" data-screen="timer">
+    <div class="theme-default-timer">
+
+        <div class="theme-default-timer-spotlight spotlight-left" aria-hidden="true"></div>
+        <div class="theme-default-timer-spotlight spotlight-center" aria-hidden="true"></div>
+        <div class="theme-default-timer-spotlight spotlight-right" aria-hidden="true"></div>
+
+        <div class="theme-default-timer-halo" aria-hidden="true"></div>
+
+        <div class="theme-default-timer-backline" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div class="theme-default-timer-speaker speaker-left" aria-hidden="true"></div>
+        <div class="theme-default-timer-speaker speaker-right" aria-hidden="true"></div>
+
+        <div class="theme-default-timer-note note-one" aria-hidden="true">♪</div>
+        <div class="theme-default-timer-note note-two" aria-hidden="true">♫</div>
+
+        <div class="theme-default-timer-content">
+            <div class="theme-default-timer-label">
+                Temps restant
+            </div>
+
+            <div class="theme-default-timer-value-wrap">
+                <div class="theme-default-timer-value" data-game-value="timer">15</div>
+                <div class="theme-default-timer-unit">Secondes</div>
+            </div>
+
+            <div class="theme-default-timer-progress">
+                <div class="theme-default-timer-progress-bar"></div>
+            </div>
+        </div>
+
+        <div class="theme-default-timer-stage" aria-hidden="true">
+            <div class="theme-default-timer-stage-floor"></div>
+            <div class="theme-default-timer-stage-edge"></div>
+        </div>
+
+        <div class="theme-default-timer-equalizer" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span>
+        </div>
+    </div>
+</section>
+{# ==========================================================================
+   PAGE 7 : REVEAL
+   ========================================================================== #}
+<section class="theme-preview-screen" data-screen="reveal" data-screen-duration="9000">
+    <div class="theme-default-reveal">
+
+        <div class="theme-default-reveal-glow glow-left" aria-hidden="true"></div>
+        <div class="theme-default-reveal-glow glow-right" aria-hidden="true"></div>
+
+        <div class="theme-default-reveal-note note-one" aria-hidden="true">♪</div>
+        <div class="theme-default-reveal-note note-two" aria-hidden="true">♫</div>
+
+        <div class="theme-default-reveal-content">
+
+            <div class="theme-default-reveal-kicker">
+                Réponse
+            </div>
+
+            <div class="theme-default-reveal-card">
+
+                <div class="theme-default-reveal-vinyl" aria-hidden="true">
+                    <div class="theme-default-reveal-vinyl-label"></div>
+                    <div class="theme-default-reveal-vinyl-center"></div>
+                </div>
+
+                <div class="theme-default-reveal-info">
+
+                    <div class="theme-default-reveal-track" data-response-key="title">
+                        Get Lucky
+                    </div>
+
+                    <div class="theme-default-reveal-separator"></div>
+
+                    {# Un bloc par critère réellement coché (voir
+                       data-rules-point/data-response-container côté JS) —
+                       la ligne se redistribue toute seule : 1 bloc visible
+                       = pleine largeur, 2 blocs = 50% chacun. #}
+                    <div class="theme-default-reveal-responses">
+                        <div class="theme-default-reveal-response" data-response-container="artist">
+                            <span class="theme-default-reveal-response-label">Artiste</span>
+                            <span class="theme-default-reveal-response-value" data-response-key="artist">Daft Punk</span>
+                        </div>
+
+                        <div class="theme-default-reveal-response" data-response-container="year">
+                            <span class="theme-default-reveal-response-label">Année</span>
+                            <span class="theme-default-reveal-response-value" data-response-key="year">2013</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="theme-default-reveal-card-light" aria-hidden="true"></div>
+
+            </div>
+
+            <div class="theme-default-reveal-line"></div>
+
+            <div class="theme-default-reveal-bonus">
+                Bien joué si vous l'aviez reconnu
+            </div>
+
+        </div>
+
+        <div class="theme-default-reveal-equalizer" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span>
+        </div>
+
+    </div>
+</section>
+
+{# ==========================================================================
+   PAGE 8 : END
+   ========================================================================== #}
+<section class="theme-preview-screen" data-screen="end" data-screen-duration="5500">
+    <div class="theme-default-end">
+
+        <div class="theme-default-end-beam beam-left" aria-hidden="true"></div>
+        <div class="theme-default-end-beam beam-right" aria-hidden="true"></div>
+
+        <div class="theme-default-end-portal" aria-hidden="true">
+            <div class="theme-default-end-portal-ring"></div>
+            <div class="theme-default-end-portal-core"></div>
+        </div>
+
+        <div class="theme-default-end-light-sweep" aria-hidden="true"></div>
+
+        <div class="theme-default-end-content">
+
+            <div class="theme-default-end-kicker">
+                Set terminé
+            </div>
+
+            <h1 class="theme-default-end-title">
+                <span>Fin</span>
+                <strong>de partie</strong>
+            </h1>
+
+            <div class="theme-default-end-separator" aria-hidden="true">
+                <span></span>
+                <i></i>
+                <span></span>
+            </div>
+
+            <div class="theme-default-end-subtitle">
+                Le blind test est terminé
+            </div>
+
+        </div>
+
+        <div class="theme-default-end-floor" aria-hidden="true">
+            <div class="theme-default-end-floor-line floor-line-one"></div>
+            <div class="theme-default-end-floor-line floor-line-two"></div>
+            <div class="theme-default-end-floor-line floor-line-three"></div>
+            <div class="theme-default-end-floor-glow"></div>
+        </div>
+
+        <div class="theme-default-end-equalizer" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span>
+        </div>
+
+        <div class="theme-default-end-note note-one" aria-hidden="true">♪</div>
+        <div class="theme-default-end-note note-two" aria-hidden="true">♫</div>
+
+    </div>
+</section>
+
+{# ==========================================================================
+   PAGE 9 : THANKS
+   ========================================================================== #}
+<section class="theme-preview-screen" data-screen="thanks" data-screen-duration="7000">
+    <div class="theme-default-thanks">
+
+        <div class="theme-default-thanks-glow glow-left" aria-hidden="true"></div>
+        <div class="theme-default-thanks-glow glow-right" aria-hidden="true"></div>
+
+        <div class="theme-default-thanks-disc" aria-hidden="true">
+            <div class="theme-default-thanks-disc-label"></div>
+            <div class="theme-default-thanks-disc-center"></div>
+        </div>
+
+        <div class="theme-default-thanks-note note-one" aria-hidden="true">♪</div>
+        <div class="theme-default-thanks-note note-two" aria-hidden="true">♫</div>
+
+        <div class="theme-default-thanks-content">
+
+            <div class="theme-default-thanks-kicker">
+                Neon Beats
+            </div>
+
+            <h1 class="theme-default-thanks-title">
+                Merci à tous !
+            </h1>
+
+            <div class="theme-default-thanks-line" aria-hidden="true"></div>
+
+            <div class="theme-default-thanks-message">
+                Merci d'avoir joué avec nous
+            </div>
+
+            <div class="theme-default-thanks-submessage">
+                À bientôt pour un nouveau blind test
+            </div>
+
+        </div>
+
+        <div class="theme-default-thanks-equalizer" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span>
+        </div>
+
+    </div>
+</section>

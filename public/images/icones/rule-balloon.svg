@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 54" class="birthday-rule-balloon" aria-hidden="true">
+    <defs>
+        <linearGradient id="ruleBalloonGrad" x1="15%" y1="0%" x2="85%" y2="100%">
+            <stop offset="0%" stop-color="#f8e6b3"/>
+            <stop offset="45%" stop-color="#eecb7e"/>
+            <stop offset="100%" stop-color="#c49331"/>
+        </linearGradient>
+    </defs>
+    <path d="M20 2C9.5 2 2 10.8 2 21.5 2 32 9 41 18.2 44.7c1.15.46 2.45.46 3.6 0C31 41 38 32 38 21.5 38 10.8 30.5 2 20 2Z" fill="url(#ruleBalloonGrad)"/>
+    <ellipse cx="13.5" cy="13" rx="4.5" ry="7" fill="rgba(255,255,255,.5)" transform="rotate(-22 13.5 13)"/>
+    <path d="M17.3 44.5 20 49 22.7 44.5Z" fill="#b8862b"/>
+</svg>

@@ -1,0 +1,24 @@
+{{ form_start(form, {attr: {class: 'admin-form'}}) }}
+    <div class="admin-form-field" data-field-name="name">
+        <label for="{{ form.name.vars.id }}">Nom du thème</label>
+        {{ form_widget(form.name) }}
+        <p class="admin-form-field__error" {{ form.name.vars.errors|length == 0 ? 'hidden' : '' }}>{{ form.name.vars.errors[0].message ?? '' }}</p>
+    </div>
+
+    <div class="admin-form-field" data-field-name="slug">
+        <label for="{{ form.slug.vars.id }}">
+            Slug (identifiant technique)
+            <span class="tooltip">
+                <span class="help-icon">?</span>
+                <span class="tooltip__content">Minuscules, chiffres et tirets uniquement (ex: "anniversaire"). Doit correspondre au nom des fichiers du thème — voir docs/THEMES.md.</span>
+            </span>
+        </label>
+        {{ form_widget(form.slug) }}
+        <p class="admin-form-field__error" {{ form.slug.vars.errors|length == 0 ? 'hidden' : '' }}>{{ form.slug.vars.errors[0].message ?? '' }}</p>
+    </div>
+
+    <div class="admin-btn-row admin-btn-row--spaced">
+        <a href="{{ path('admin_theme_index') }}" class="btn btn--secondary">Annuler</a>
+        <button type="submit" class="btn btn--primary">Enregistrer</button>
+    </div>
+{{ form_end(form) }}

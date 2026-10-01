@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" fill="none">
+    <defs>
+        <linearGradient id="headphoneGradient" x1="90" y1="90" x2="410" y2="420" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#00E5FF"/>
+            <stop offset=".5" stop-color="#8B5CF6"/>
+            <stop offset="1" stop-color="#FF1493"/>
+        </linearGradient>
+        <linearGradient id="earGradient" x1="100" y1="250" x2="400" y2="390" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#00E5FF"/>
+            <stop offset="1" stop-color="#FF1493"/>
+        </linearGradient>
+        <filter id="headphoneGlow">
+            <feGaussianBlur stdDeviation="7" result="blur"/>
+            <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+
+    <path
+        d="M104 268V226C104 140 169 76 250 76s146 64 146 150v42"
+        stroke="url(#headphoneGradient)"
+        stroke-width="25"
+        stroke-linecap="round"
+        filter="url(#headphoneGlow)"
+    />
+
+    <path
+        d="M119 260V226C119 148 178 94 250 94s131 54 131 132v34"
+        stroke="#0B0E1B"
+        stroke-width="13"
+        stroke-linecap="round"
+    />
+
+    <path
+        d="M104 267c-18 0-32 15-32 33v76c0 18 14 32 32 32h35V267h-35Z"
+        fill="#0B0E1B"
+        stroke="url(#earGradient)"
+        stroke-width="7"
+        filter="url(#headphoneGlow)"
+    />
+
+    <path
+        d="M396 267c18 0 32 15 32 33v76c0 18-14 32-32 32h-35V267h35Z"
+        fill="#0B0E1B"
+        stroke="url(#earGradient)"
+        stroke-width="7"
+        filter="url(#headphoneGlow)"
+    />
+
+    <rect x="91" y="291" width="31" height="94" rx="15.5" fill="#10152A"/>
+    <rect x="378" y="291" width="31" height="94" rx="15.5" fill="#10152A"/>
+
+    <path d="M107 307v62" stroke="#00E5FF" stroke-width="4" stroke-linecap="round"/>
+    <path d="M393 307v62" stroke="#FF1493" stroke-width="4" stroke-linecap="round"/>
+
+    <path d="M146 395c18 31 48 49 78 49h52c30 0 60-18 78-49" stroke="url(#headphoneGradient)" stroke-width="8" stroke-linecap="round" opacity=".9"/>
+
+    <path d="M171 127c21-20 48-31 79-31s58 11 79 31" stroke="#00E5FF" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+    <path d="M196 112c17-7 35-10 54-10s37 3 54 10" stroke="#FF1493" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+
+    <g filter="url(#headphoneGlow)">
+        <path d="M72 160l13-13 13 13-13 13z" fill="#FF1493"/>
+        <path d="M407 145l10-10 10 10-10 10z" fill="#00E5FF"/>
+        <circle cx="67" cy="411" r="5" fill="#8B5CF6"/>
+        <circle cx="433" cy="411" r="4" fill="#00E5FF"/>
+    </g>
+</svg>

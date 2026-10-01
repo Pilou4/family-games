@@ -42,6 +42,8 @@ export class QuestionFieldset {
         element.querySelector('.js-open-youtube-modal-btn').addEventListener('click', this.#handleOpenYoutubeModal.bind(this));
         element.querySelector('.js-close-youtube-dialog-btn').addEventListener('click', this.#handleCloseYoutubeModal.bind(this));
         element.querySelector('.js-remove-question-btn').addEventListener('click', this.#handleRemove.bind(this));
+        element.querySelector('.js-move-up-btn').addEventListener('click', () => this.#move(-1));
+        element.querySelector('.js-move-down-btn').addEventListener('click', () => this.#move(1));
 
         return element;
     }
@@ -75,15 +77,22 @@ export class QuestionFieldset {
         this.#element.querySelector('.js-field-start-time').value = data.startTime || 0;
         this.#element.querySelector('.js-field-source').value = data.source;
 
+        // D'abord la mise à jour de l'affichage selon la source (elle cache
+        // les 2 lecteurs par défaut), ENSUITE on montre le bon — sinon ce
+        // dernier écrase ce qu'on vient d'afficher.
+        this.#handleSourceChange();
+
         if ('youtube' === data.source) {
             this.#element.querySelector('.js-field-youtube-id').value = data.youtubeId || '';
             this.#element.querySelector('.js-youtube-preview').hidden = !data.youtubeId;
         } else if (data.mp3Path) {
             this.#element.querySelector('.js-mp3-audio').src = `/${data.mp3Path}`;
             this.#element.querySelector('.js-mp3-preview').hidden = false;
+            const fileInputText = this.#element.querySelector('.js-file-input-text');
+            fileInputText.textContent = data.mp3Path.split('/').pop();
+            fileInputText.classList.add('question-fieldset__file-input__text--filled');
         }
 
-        this.#handleSourceChange();
         this.#notifyChanged();
     }
 
@@ -114,6 +123,9 @@ export class QuestionFieldset {
         audioEl.src = this.#objectUrl;
 
         this.#element.querySelector('.js-mp3-preview').hidden = false;
+        const fileInputText = this.#element.querySelector('.js-file-input-text');
+        fileInputText.textContent = file.name;
+        fileInputText.classList.add('question-fieldset__file-input__text--filled');
         this.#notifyChanged();
     }
 
@@ -151,8 +163,33 @@ export class QuestionFieldset {
         if (this.#objectUrl) {
             URL.revokeObjectURL(this.#objectUrl);
         }
+        const container = this.#element.parentElement;
         this.#element.remove();
+        if (container) {
+            renumberQuestionFieldsets(container);
+        }
         this.#notifyChanged();
+    }
+
+    /**
+     * @param {1|-1} direction
+     */
+    #move(direction) {
+        const sibling = 1 === direction
+            ? this.#element.nextElementSibling
+            : this.#element.previousElementSibling;
+
+        if (!sibling) {
+            return;
+        }
+
+        if (1 === direction) {
+            sibling.after(this.#element);
+        } else {
+            sibling.before(this.#element);
+        }
+
+        renumberQuestionFieldsets(this.#element.parentElement);
     }
 
     /**
@@ -162,4 +199,18 @@ export class QuestionFieldset {
     #notifyChanged() {
         document.dispatchEvent(new CustomEvent('blindtest:questions-changed'));
     }
+}
+
+/**
+ * Remet à jour l'étiquette "Extrait n°X" de chaque fieldset selon son
+ * ordre actuel dans le conteneur (après ajout, suppression ou déplacement).
+ * @param {HTMLElement} container
+ */
+export function renumberQuestionFieldsets(container) {
+    container.querySelectorAll('.admin-card--new-question').forEach((fieldsetElement, index) => {
+        const indexEl = fieldsetElement.querySelector('.js-field-index');
+        if (indexEl) {
+            indexEl.textContent = `Extrait n°${index + 1}`;
+        }
+    });
 }

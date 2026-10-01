@@ -30,7 +30,7 @@
             <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
         {% endif %}
     </head>
-    <body>
+    <body class="{% block bodyClass %}{% endblock %}">
         {% include "_partials/_header.html.twig" %}
         {% block body %}{% endblock %}
         {% include "_partials/_footer.html.twig" %}

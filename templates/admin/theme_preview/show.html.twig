@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Prévisualisation — {{ slug }}{% endblock %}
+
+{% block bodyClass %}theme-preview theme-{{ slug }}{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/theme-preview.css') }}">
+{% endblock %}
+
+{% block importmap %}
+    {{ importmap(['app', 'theme-preview', 'theme-preview-player', 'corner-logo', slug]) }}
+{% endblock %}
+
+{% block body %}
+    <div class="game-corner-logo" id="game-corner-logo">
+        <img src="{{ asset('images/logo.svg') }}" alt="">
+    </div>
+
+    <div class="theme-preview">
+        {% if exists %}
+            {{ include(template) }}
+        {% else %}
+            <div class="theme-preview-todo">
+                <p class="theme-preview-todo__label">Thème introuvable</p>
+                <p class="theme-preview-todo__hint">{{ template }} n'existe pas</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="theme-preview-nav">
+        <button type="button" class="theme-preview-nav__btn" id="theme-preview-prev" aria-label="Écran précédent">←</button>
+        <div class="theme-preview-nav__counter" id="theme-preview-counter">1 / 1</div>
+        <button type="button" class="theme-preview-nav__btn" id="theme-preview-next" aria-label="Écran suivant">→</button>
+    </div>
+
+    {# Barre de contrôle musique — commune à TOUS les thèmes (plus
+       spécifique à "anniversaire" comme avant), markup et JS partagés
+       (assets/js/theme-preview-player.js). Seule la source audio change
+       d'un thème à l'autre ; tant qu'un thème n'a pas de musique, la
+       barre reste visible mais désactivée. #}
+    {% set musicSrc = slug == 'anniversaire' ? 'audio/theme-anniversaire/music.mp3' : null %}
+    {% set startSrc = slug == 'anniversaire' ? 'audio/theme-anniversaire/start.mp3' : null %}
+
+    <audio id="theme-preview-music" preload="auto" loop>
+        {% if musicSrc %}<source src="{{ asset(musicSrc) }}" type="audio/mpeg">{% endif %}
+    </audio>
+    <audio id="theme-preview-start-sound" preload="auto">
+        {% if startSrc %}<source src="{{ asset(startSrc) }}" type="audio/mpeg">{% endif %}
+    </audio>
+
+    <div id="theme-preview-player" class="theme-preview-player">
+        <button type="button" id="theme-preview-player-play" class="theme-preview-player__play" aria-label="Lire la musique" title="Lire / Pause">▶</button>
+        <div class="theme-preview-player__info">
+            <div class="theme-preview-player__name">{{ slug|capitalize }}</div>
+            <input id="theme-preview-player-progress" class="theme-preview-player__progress" type="range" min="0" max="100" value="0" step="0.1" aria-label="Progression de la musique">
+        </div>
+        <button type="button" id="theme-preview-player-mute" class="theme-preview-player__mute" aria-label="Couper le son" title="Couper le son">🔊</button>
+        <input id="theme-preview-player-volume" class="theme-preview-player__volume" type="range" min="0" max="1" value="0.18" step="0.01" aria-label="Volume" title="Volume">
+    </div>
+
+{% endblock %}

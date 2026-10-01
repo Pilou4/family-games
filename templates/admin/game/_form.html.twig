@@ -55,6 +55,18 @@
         <p class="admin-form-field__error" {{ form.duration.vars.errors|length == 0 ? 'hidden' : '' }}>{{ form.duration.vars.errors[0].message ?? '' }}</p>
     </div>
 
+    <div class="admin-form-field" data-field-name="theme">
+        <label for="{{ form.theme.vars.id }}">
+            Thème visuel
+            <span class="tooltip">
+                <span class="help-icon">?</span>
+                <span class="tooltip__content">Habillage visuel complet du jeu (couleurs, animations). "Défaut" = rendu actuel.</span>
+            </span>
+        </label>
+        {{ form_widget(form.theme) }}
+        <p class="admin-form-field__error" {{ form.theme.vars.errors|length == 0 ? 'hidden' : '' }}>{{ form.theme.vars.errors[0].message ?? '' }}</p>
+    </div>
+
     <div id="question-fieldset-container"></div>
 
     <div class="admin-btn-row admin-btn-row--spaced">
@@ -66,18 +78,26 @@
 
 <template id="question-fieldset-template">
     <div class="admin-card admin-card--new-question">
+        <div class="question-fieldset__header">
+            <span class="question-fieldset__index js-field-index">Extrait n°1</span>
+            <div class="question-fieldset__reorder">
+                <span class="question-fieldset__drag-handle" draggable="true" title="Glisser pour réordonner">⠿</span>
+                <button type="button" class="question-fieldset__move-btn js-move-up-btn" title="Monter" aria-label="Monter ce titre">▲</button>
+                <button type="button" class="question-fieldset__move-btn js-move-down-btn" title="Descendre" aria-label="Descendre ce titre">▼</button>
+            </div>
+        </div>
         <button type="button" class="question-fieldset__remove-btn js-remove-question-btn" title="Retirer ce titre" aria-label="Retirer ce titre">✕</button>
         <input type="hidden" class="js-field-id" value="">
         <div class="question-fieldset">
             <div class="question-fieldset__row question-fieldset__row--3">
                 <div class="question-fieldset__field">
-                    <span class="question-fieldset__label">Titre</span>
-                    <input type="text" class="js-field-title">
+                    <span class="question-fieldset__label">Artiste</span>
+                    <input type="text" class="js-field-artist">
                     <p class="question-fieldset__error" hidden></p>
                 </div>
                 <div class="question-fieldset__field">
-                    <span class="question-fieldset__label">Artiste</span>
-                    <input type="text" class="js-field-artist">
+                    <span class="question-fieldset__label">Titre</span>
+                    <input type="text" class="js-field-title">
                     <p class="question-fieldset__error" hidden></p>
                 </div>
                 <div class="question-fieldset__field">
@@ -103,7 +123,10 @@
                 </div>
                 <div class="question-fieldset__field js-field-mp3-wrapper">
                     <span class="question-fieldset__label">Fichier MP3</span>
-                    <input type="file" class="js-field-mp3-file" accept="audio/mpeg">
+                    <label class="question-fieldset__file-input">
+                        <input type="file" class="js-field-mp3-file" accept="audio/mpeg" hidden>
+                        <span class="question-fieldset__file-input__text js-file-input-text">Choisir un fichier…</span>
+                    </label>
                     <p class="question-fieldset__error" hidden></p>
                 </div>
             </div>
@@ -111,7 +134,7 @@
             <div class="question-fieldset__row question-fieldset__row--start-preview">
                 <div class="question-fieldset__field question-fieldset__field--narrow">
                     <span class="question-fieldset__label">Départ (s)</span>
-                    <input type="number" class="js-field-start-time" value="0">
+                    <input type="number" class="js-field-start-time" value="0" min="0">
                     <p class="question-fieldset__error" hidden></p>
                 </div>
 

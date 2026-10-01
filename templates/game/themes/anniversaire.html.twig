@@ -1,0 +1,262 @@
+{# ==========================================================================
+   THÈME "ANNIVERSAIRE" — tout le jeu dans ce fichier
+   ==========================================================================
+   9 écrans, dans l'ordre. Chacun est une <section class="theme-preview-screen">
+   avec un data-screen unique (repris par le CSS pour déclencher ses
+   animations, et par le JS du thème pour savoir quel écran est actif). #}
+
+{# ---- Page 1 : Présentation du thème (pour nous, pas un écran du jeu) ---- #}
+<section class="theme-preview-screen is-active" data-screen="presentation" data-preview-only="true">
+    <div class="birthday-page-content">
+        <div class="birthday-logo">BLIND TEST</div>
+        <div class="birthday-title">BIRTHDAY GLOW</div>
+        <div class="birthday-cake">🎂</div>
+        <div class="birthday-timer" data-game-value="duration">15</div>
+        <div class="birthday-subtitle">SPECIAL BIRTHDAY EDITION</div>
+    </div>
+</section>
+
+{# ---- Page 2 : Accueil ---- #}
+<section class="theme-preview-screen" data-screen="welcome">
+    <div class="birthday-page-2">
+        <div class="birthday-page-2-label">BLIND TEST</div>
+
+        <h1 class="birthday-page-2-title" data-game-value="blindtest-name">BIRTHDAY GLOW</h1>
+
+        <div class="birthday-page-2-cake">🎂</div>
+
+        <div class="birthday-page-2-subtitle">
+            UNE ÉDITION SPÉCIALE POUR UNE SOIRÉE SPÉCIALE
+        </div>
+    </div>
+</section>
+
+{# ---- Page : Description (seulement si le blind test en a une — sinon
+   écran sauté dans le vrai jeu, voir assets/js/game/screens.js. Toujours
+   visible en prévisualisation avec un texte d'exemple.) ---- #}
+<section class="theme-preview-screen" data-screen="description" data-screen-duration="7000">
+    <div class="birthday-page-description">
+        <div class="birthday-page-description-label">À propos de cette soirée</div>
+        <p class="birthday-page-description-text" data-game-value="description">Exemple : une soirée toute en lumières et en confettis — ce texte reprend la description du blind test quand elle est renseignée.</p>
+    </div>
+</section>
+
+{# ---- Page 3 : Règles du jeu ---- #}
+<section class="theme-preview-screen" data-screen="rules">
+    <div class="birthday-rules-page">
+        <div class="birthday-rules-card">
+            <div class="birthday-rules-decoration one"></div>
+            <div class="birthday-rules-decoration two"></div>
+            <div class="birthday-rules-decoration three"></div>
+            <div class="birthday-rules-decoration four"></div>
+
+            <h1 class="birthday-rules-title">RÈGLES DU JEU</h1>
+            <div class="birthday-rules-title-line"></div>
+
+            <ul class="birthday-rules-list">
+                <li class="birthday-rule">
+                    <span class="birthday-rule-number">
+                        {{ inline_svg('images/icones/rule-balloon.svg') }}
+                        <span class="birthday-rule-number-text">1</span>
+                    </span>
+                    <span><strong data-game-value="question-count">9</strong> chansons</span>
+                </li>
+                <li class="birthday-rule">
+                    <span class="birthday-rule-number">
+                        {{ inline_svg('images/icones/rule-balloon.svg') }}
+                        <span class="birthday-rule-number-text">2</span>
+                    </span>
+                    <span><strong data-game-value="duration">15</strong> secondes par extrait</span>
+                </li>
+                <li class="birthday-rule" data-rules-point="title">
+                    <span class="birthday-rule-number">
+                        {{ inline_svg('images/icones/rule-balloon.svg') }}
+                        <span class="birthday-rule-number-text">3</span>
+                    </span>
+                    <span><strong>1 point</strong> pour le titre</span>
+                </li>
+                <li class="birthday-rule" data-rules-point="artist">
+                    <span class="birthday-rule-number">
+                        {{ inline_svg('images/icones/rule-balloon.svg') }}
+                        <span class="birthday-rule-number-text">4</span>
+                    </span>
+                    <span><strong>1 point</strong> pour l'artiste</span>
+                </li>
+                <li class="birthday-rule" data-rules-point="year">
+                    <span class="birthday-rule-number">
+                        {{ inline_svg('images/icones/rule-balloon.svg') }}
+                        <span class="birthday-rule-number-text">5</span>
+                    </span>
+                    <span><strong>1 point</strong> pour l'année</span>
+                </li>
+            </ul>
+        </div>
+
+        <span class="birthday-rule-spark s1"></span>
+        <span class="birthday-rule-spark s2"></span>
+        <span class="birthday-rule-spark s3"></span>
+        <span class="birthday-rule-spark s4"></span>
+        <span class="birthday-rule-spark s5"></span>
+        <span class="birthday-rule-spark s6"></span>
+    </div>
+</section>
+
+{# ---- Page 4 : C'est parti ---- #}
+<section class="theme-preview-screen" data-screen="start">
+    <div class="birthday-start-page">
+        <div class="birthday-start-flash"></div>
+
+        <span class="birthday-start-confetti"></span>
+        <span class="birthday-start-confetti"></span>
+        <span class="birthday-start-confetti"></span>
+        <span class="birthday-start-confetti"></span>
+        <span class="birthday-start-confetti"></span>
+        <span class="birthday-start-confetti"></span>
+        <span class="birthday-start-confetti"></span>
+        <span class="birthday-start-confetti"></span>
+        <span class="birthday-start-confetti"></span>
+        <span class="birthday-start-confetti"></span>
+        <span class="birthday-start-confetti"></span>
+        <span class="birthday-start-confetti"></span>
+
+        <h1 class="birthday-start-title">C'EST PARTI !</h1>
+
+        <div class="birthday-start-subtitle">
+            QUE LE BLIND TEST COMMENCE
+        </div>
+    </div>
+</section>
+
+{# ---- Page 5 : Extrait n°... ---- #}
+<section class="theme-preview-screen" data-screen="transition">
+    <div class="birthday-page-5">
+        <div class="birthday-page-5-garland">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+        </div>
+
+        <div class="birthday-page-5-medallion">
+            <div class="birthday-page-5-number" data-game-value="track-number">1</div>
+        </div>
+    </div>
+</section>
+
+{# ---- Page 6 : Chrono + jeu ---- #}
+<section class="theme-preview-screen" data-screen="timer">
+    <div class="birthday-page-6">
+        <div class="birthday-page-6-warm-light"></div>
+
+        <div class="birthday-page-6-ring ring-1"></div>
+        <div class="birthday-page-6-ring ring-2"></div>
+
+        <span class="birthday-page-6-spark s1"></span>
+        <span class="birthday-page-6-spark s2"></span>
+        <span class="birthday-page-6-spark s3"></span>
+        <span class="birthday-page-6-spark s4"></span>
+        <span class="birthday-page-6-spark s5"></span>
+        <span class="birthday-page-6-spark s6"></span>
+        <span class="birthday-page-6-spark s7"></span>
+        <span class="birthday-page-6-spark s8"></span>
+
+        <div class="birthday-page-6-center timer-high">
+            <div class="birthday-page-6-number" data-game-value="timer">15</div>
+        </div>
+
+        <div class="birthday-page-6-side-candle">
+            <div class="birthday-page-6-side-candle-body"></div>
+            <span class="birthday-page-6-side-candle-wick"></span>
+            <span class="birthday-page-6-side-candle-flame"></span>
+            <span class="birthday-page-6-melted-wax"></span>
+            <span class="birthday-page-6-final-drips" aria-hidden="true">
+                <span></span><span></span><span></span>
+            </span>
+        </div>
+    </div>
+</section>
+
+{# ---- Page 7 : Réponse ---- #}
+<section class="theme-preview-screen" data-screen="reveal">
+    <div class="birthday-page-7">
+        <div class="birthday-page-7-stage">
+            <div class="birthday-page-7-glow"></div>
+
+            <div class="birthday-page-7-curtain left"></div>
+            <div class="birthday-page-7-curtain right"></div>
+            <div class="birthday-page-7-center-light"></div>
+
+            <div class="birthday-page-7-content">
+                <div class="birthday-page-7-label">RÉPONSE</div>
+
+                <h1 class="birthday-page-7-title" data-response-key="title">TITRE DU MORCEAU</h1>
+
+                <div class="birthday-page-7-separator"></div>
+
+                <div class="birthday-page-7-responses">
+                    <div class="birthday-page-7-response" data-response-container="artist">
+                        <span class="birthday-page-7-response-label">ARTISTE</span>
+                        <span class="birthday-page-7-response-value" data-response-key="artist">ARTISTE</span>
+                    </div>
+
+                    <div class="birthday-page-7-response year" data-response-container="year">
+                        <span class="birthday-page-7-response-label">ANNÉE</span>
+                        <span class="birthday-page-7-response-value" data-response-key="year">2026</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ---- Page 8 : Fin du jeu ---- #}
+<section class="theme-preview-screen" data-screen="end">
+    <div class="birthday-page-8">
+        <div class="birthday-page-8-fireworks" aria-hidden="true">
+            <span class="birthday-page-8-firework f1"></span>
+            <span class="birthday-page-8-firework f2"></span>
+            <span class="birthday-page-8-firework f3"></span>
+            <span class="birthday-page-8-firework f4"></span>
+            <span class="birthday-page-8-firework f5"></span>
+            <span class="birthday-page-8-firework f6"></span>
+        </div>
+
+        <div class="birthday-page-8-end-content">
+            <div class="birthday-page-8-label">FIN DU BLIND TEST</div>
+            <h1 class="birthday-page-8-title">BRAVO À TOUS !</h1>
+            <div class="birthday-page-8-line"></div>
+            <div class="birthday-page-8-subtitle">LE BLIND TEST EST TERMINÉ</div>
+        </div>
+    </div>
+</section>
+
+{# ---- Page 9 : Remerciement ---- #}
+<section class="theme-preview-screen" data-screen="thanks">
+    <div class="birthday-page-9">
+        <div class="birthday-page-9-calm-light"></div>
+
+        <span class="birthday-page-9-confetti c1"></span>
+        <span class="birthday-page-9-confetti c2"></span>
+        <span class="birthday-page-9-confetti c3"></span>
+        <span class="birthday-page-9-confetti c4"></span>
+        <span class="birthday-page-9-confetti c5"></span>
+        <span class="birthday-page-9-confetti c6"></span>
+
+        <div class="birthday-page-9-content">
+            <div class="birthday-page-9-label">MERCI</div>
+            <h1 class="birthday-page-9-title">MERCI À TOUS !</h1>
+            <div class="birthday-page-9-subtitle">
+                MERCI D'AVOIR PARTAGÉ CE MOMENT
+                <br>ET D'AVOIR JOUÉ LE JEU JUSQU'AU BOUT
+            </div>
+            <div class="birthday-page-9-line"></div>
+        </div>
+
+        <div class="birthday-page-9-fade" aria-hidden="true"></div>
+    </div>
+</section>

@@ -1,0 +1,12 @@
+{% extends 'admin/_partials/_layout.html.twig' %}
+
+{% block title %}Modifier {{ theme.name|capitalize }} — Administration{% endblock %}
+
+{% block admin_body %}
+    <h1 class="admin-title">Modifier {{ theme.name|capitalize }}</h1>
+    {% include 'admin/theme/_form.html.twig' %}
+
+    <div class="admin-back-row">
+        <a href="{{ path('admin_theme_index') }}" class="btn btn--secondary">← Retour à la liste</a>
+    </div>
+{% endblock %}

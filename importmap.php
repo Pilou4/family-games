@@ -25,7 +25,12 @@
 return [
     'app' => ['path' => './assets/app.js', 'entrypoint' => true],
     'admin' => ['path' => './assets/js/admin.js', 'entrypoint' => true],
-    'game' => ['path' => './assets/js/game.js', 'entrypoint' => true],
+    'game' => ['path' => './assets/js/game/game.js', 'entrypoint' => true],
+    'theme-preview' => ['path' => './assets/js/theme-preview.js', 'entrypoint' => true],
+    'theme-preview-player' => ['path' => './assets/js/theme-preview-player.js', 'entrypoint' => true],
+    'corner-logo' => ['path' => './assets/js/corner-logo.js', 'entrypoint' => true],
+    'default' => ['path' => './assets/js/themes/default.js', 'entrypoint' => true],
+    'anniversaire' => ['path' => './assets/js/themes/anniversaire.js', 'entrypoint' => true],
     '@hotwired/stimulus' => ['version' => '3.2.2'],
     '@symfony/stimulus-bundle' => ['path' => './vendor/symfony/stimulus-bundle/assets/dist/loader.js'],
     '@hotwired/turbo' => ['version' => '8.0.23'],

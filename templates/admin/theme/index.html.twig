@@ -1,0 +1,53 @@
+{% extends 'admin/_partials/_layout.html.twig' %}
+
+{% block title %}Thèmes — Administration{% endblock %}
+
+{% block admin_body %}
+    <div class="admin__header">
+        <h1 class="admin-title">Thèmes</h1>
+        <a href="{{ path('admin_theme_new') }}" class="btn btn--primary">Nouveau thème</a>
+    </div>
+
+    {% if themes is empty %}
+        <p>Aucun thème pour l'instant. Sans thème choisi, un blind test utilise le rendu "Défaut".</p>
+    {% else %}
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Slug</th>
+                    <th>Créé le</th>
+                    <th class="admin-table__actions-header">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for theme in themes %}
+                    <tr>
+                        {# Majuscule au début uniquement pour l'affichage — le nom en base ne change pas. #}
+                        <td>{{ theme.name|capitalize }}</td>
+                        <td><code>{{ theme.slug }}</code></td>
+                        <td>{{ theme.createdAt ? theme.createdAt|date('d/m/Y') : '' }}</td>
+                        <td class="admin-table__actions admin-table__actions--right">
+                            <a href="{{ path('admin_theme_preview', {slug: theme.slug}) }}" class="admin-icon-btn" title="Prévisualiser" aria-label="Prévisualiser">
+                                {{ inline_svg('images/icones/play.svg') }}
+                            </a>
+                            <a href="{{ path('admin_theme_edit', {id: theme.id}) }}" class="admin-icon-btn" title="Modifier" aria-label="Modifier">
+                                {{ inline_svg('images/icones/edit.svg') }}
+                            </a>
+                            <form
+                                method="post"
+                                action="{{ path('admin_theme_delete', {id: theme.id}) }}"
+                                data-confirm="Supprimer ce thème ? Les blind tests qui l'utilisent repasseront au thème Défaut."
+                            >
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete-theme-' ~ theme.id) }}">
+                                <button type="submit" class="admin-icon-btn admin-icon-btn--danger" title="Supprimer" aria-label="Supprimer">
+                                    {{ inline_svg('images/icones/trash.svg') }}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

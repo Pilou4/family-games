@@ -6,6 +6,7 @@ use App\Entity\BlindTest;
 use App\Entity\Questions;
 use App\Form\BlindTestType;
 use App\Repository\BlindTestRepository;
+use App\Repository\ThemeRepository;
 use App\Service\BlindTestDeleter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,10 +30,13 @@ final class AdminGameController extends AbstractController
     }
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, ThemeRepository $themeRepository): Response
     {
         $blindTest = new BlindTest();
         $blindTest->setCreatedAt(new \DateTimeImmutable());
+        // Thème pré-sélectionné à la création : "Default", quel que soit
+        // son id en base (il n'est pas forcément le premier créé).
+        $blindTest->setTheme($themeRepository->findOneBy(['slug' => 'default']));
 
         $form = $this->createForm(BlindTestType::class, $blindTest);
         $form->handleRequest($request);

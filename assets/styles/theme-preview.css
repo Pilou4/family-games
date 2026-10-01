@@ -1,0 +1,321 @@
+/**
+ * BASE COMMUNE DE PRÉVISUALISATION
+ * ----------------------------------
+ * Générique, partagée par TOUS les thèmes : mécanique de changement
+ * d'écran, navigation, lecteur musique. Rien ici n'est spécifique à un
+ * thème en particulier — les couleurs/animations/décor viennent du
+ * fichier theme-{slug}.css chargé en plus de celui-ci.
+ */
+
+body.theme-preview {
+    margin: 0;
+    overflow: hidden;
+    background-color: #05040a;
+    color: #ffffff;
+}
+
+/* Les écrans du thème sont en position fixe plein écran (.theme-preview-
+   screen ci-dessous) — sans ça, ils passent par-dessus la nav du site
+   qui, elle, reste dans le flux normal de la page. */
+body.theme-preview .site-header {
+    position: relative;
+    z-index: 10000;
+}
+
+.theme-preview {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+.theme-preview-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.theme-preview-screen.is-active {
+    display: flex;
+    pointer-events: auto;
+}
+
+.theme-preview-todo {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-family: sans-serif;
+}
+
+.theme-preview-todo__label {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+}
+
+.theme-preview-todo__hint {
+    font-size: 0.9rem;
+    font-family: monospace;
+}
+
+/* Navigation */
+
+.theme-preview-nav {
+    position: fixed;
+    z-index: 9999;
+    left: 50%;
+    bottom: 25px;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.theme-preview-nav__btn {
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.theme-preview-nav__btn:hover {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.16);
+}
+
+/* Court verrou anti-double-clic (ex: play/pause) : le bouton reste
+   cliquable au sens HTML tant qu'on ne lui donne pas explicitement
+   l'attribut "disabled" en JS, donc ce style ne s'applique que pendant
+   ce court délai volontaire — jamais en temps normal. */
+.theme-preview-nav__btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    transform: none;
+}
+
+.theme-preview-nav__counter {
+    min-width: 55px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.theme-preview-back {
+    position: fixed;
+    z-index: 9999;
+    top: 16px;
+    left: 16px;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    font-size: 0.85rem;
+    text-decoration: none;
+    backdrop-filter: blur(10px);
+}
+
+.theme-preview-back:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+/* ==========================================================================
+   LOGO PERMANENT — commun à tous les thèmes, pas dupliqué dans chacun.
+   Présent de l'écran d'accueil jusqu'à la fin, caché uniquement sur
+   l'écran "presentation" (réservé à la prévisualisation). Piloté par
+   assets/js/corner-logo.js, qui écoute les mêmes événements de
+   changement d'écran que les thèmes eux-mêmes.
+   ========================================================================== */
+
+.game-corner-logo {
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    z-index: 50;
+    opacity: 0;
+    transform: scale(.85);
+    transition: opacity 1s ease, transform 1s ease;
+    pointer-events: none;
+}
+
+.game-corner-logo.is-visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.game-corner-logo img {
+    display: block;
+    width: 100px;
+    max-width: 20vw;
+    height: auto;
+}
+
+@media (max-width: 700px) {
+    .game-corner-logo { right: 15px; bottom: 15px; }
+    .game-corner-logo img { width: 70px; }
+}
+
+/* ==========================================================================
+   LECTEUR MUSIQUE (barre flottante, en bas à gauche) — commun à tous les
+   thèmes, pas dupliqué dans chacun. Visible même sans musique configurée
+   pour le thème (.is-disabled), voir assets/js/theme-preview-player.js.
+   ========================================================================== */
+
+.theme-preview-player {
+    position: fixed;
+    left: 24px;
+    bottom: 24px;
+    z-index: 200;
+    width: min(340px, calc(100vw - 48px));
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: 18px;
+    background: rgba(18, 12, 32, .72);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, .28), inset 0 1px 0 rgba(255, 255, 255, .08);
+    backdrop-filter: blur(18px);
+    color: white;
+    transition: opacity .2s ease;
+}
+
+.theme-preview-player.is-disabled {
+    opacity: .45;
+}
+
+.theme-preview-player__play {
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff62b2, #9c65ff);
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 0 5px 18px rgba(255, 91, 177, .3);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.theme-preview-player__play:hover {
+    transform: scale(1.08);
+    box-shadow: 0 7px 24px rgba(255, 91, 177, .45);
+}
+
+.theme-preview-player__play:disabled,
+.theme-preview-player__mute:disabled {
+    cursor: not-allowed;
+}
+
+.theme-preview-player__info {
+    min-width: 0;
+    flex: 1;
+}
+
+.theme-preview-player__name {
+    margin-bottom: 5px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    color: rgba(255, 255, 255, .9);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.theme-preview-player__progress {
+    width: 100%;
+    height: 4px;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, .16);
+    cursor: pointer;
+}
+
+.theme-preview-player__progress::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 10px;
+    height: 10px;
+    border: 0;
+    border-radius: 50%;
+    background: #ff72b9;
+    box-shadow: 0 0 8px rgba(255, 114, 185, .7);
+}
+
+.theme-preview-player__progress::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    border: 0;
+    border-radius: 50%;
+    background: #ff72b9;
+}
+
+.theme-preview-player__mute {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .07);
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background .2s ease, transform .2s ease;
+}
+
+.theme-preview-player__mute:hover {
+    background: rgba(255, 255, 255, .14);
+    transform: scale(1.06);
+}
+
+.theme-preview-player__volume {
+    width: 55px;
+    height: 4px;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, .16);
+    cursor: pointer;
+}
+
+.theme-preview-player__volume::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 9px;
+    height: 9px;
+    border: 0;
+    border-radius: 50%;
+    background: white;
+}
+
+.theme-preview-player__volume::-moz-range-thumb {
+    width: 9px;
+    height: 9px;
+    border: 0;
+    border-radius: 50%;
+    background: white;
+}
+
+@media (max-width: 700px) {
+    .theme-preview-player { left: 12px; bottom: 12px; width: calc(100vw - 24px); }
+    .theme-preview-player__volume { display: none; }
+}

@@ -1,278 +1,32 @@
-.game {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1.5rem;
-    gap: 1rem;
-}
+/**
+ * BASE STRUCTURELLE DU JEU — ÉTAPE 3 (barre de contrôle)
+ * ---------------------------------------------------------
+ * Le changement d'écran (.theme-preview-screen + .is-active) et le style
+ * de la barre (.theme-preview-nav / .theme-preview-nav__btn) viennent de
+ * theme-preview.css, chargé aussi ici et réutilisé tel quel — même style
+ * que la prévisualisation, sans dupliquer le CSS.
+ */
 
-.game__meta {
-    width: 100%;
-    max-width: 600px;
-    text-align: left;
-    color: var(--color-muted);
-    font-size: 0.9rem;
-}
-
-.game__meta--invisible {
-    visibility: hidden;
-}
-
-.game-card {
-    position: relative;
-    width: 100%;
-    max-width: 600px;
-    background-color: var(--color-bg-elevated);
-    border-radius: 0.75rem;
-    padding: 2rem 1.5rem;
-    overflow: hidden;
-}
-
-.game-number-badge {
-    position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
-    padding: 0.2rem 0.6rem;
-    border-radius: 999px;
-    background-color: var(--color-bg);
-    color: var(--color-muted);
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.game-card--no-bottom-padding {
-    padding: 2rem 1.5rem 0;
-}
-
-.game-card--center {
-    text-align: center;
-}
-
-.game-controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-    margin: 1.5rem 0 0;
-}
-
-.game-controls .game-btn-row {
+body.game-fullscreen {
     margin: 0;
+    overflow: hidden;
+    background-color: #05040a;
+    color: #ffffff;
 }
 
-.game-admin-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    margin: 1.5rem -1.5rem 0;
-    padding: 0.75rem 1rem;
-    background-color: var(--color-bg);
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 0 0 0.75rem 0.75rem;
-}
-
-.game-admin-bar__btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: none;
-    background-color: transparent;
-    color: var(--color-text);
-    cursor: pointer;
-}
-
-.game-admin-bar__btn:hover,
-.game-admin-bar__btn:focus-visible {
-    background-color: var(--color-bg);
-    color: var(--color-accent);
-}
-
-.game-player {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.25rem;
-    padding: 1.5rem 0;
-}
-
-/* Zone d'affichage centrale : toujours EXACTEMENT la même taille, quel que
-   soit ce qui est montré dedans (logo, bienvenue, règles, chrono ou
-   réponse), pour que le bloc ne saute jamais visuellement d'un état à
-   l'autre. Assez grande pour accueillir le contenu le plus large (les
-   règles). */
-.game-stage {
-    width: 320px;
-    height: 340px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+.game {
     position: relative;
+    width: 100vw;
+    height: 100vh;
 }
 
-.game-stage > * {
-    max-width: 100%;
-    max-height: 100%;
-    overflow-y: auto;
-}
-
-.game-stage__logo {
-    max-width: 65%;
-    max-height: 65%;
-}
-
-@keyframes game-intro-fade-in {
-    from {
-        opacity: 0;
-        transform: translateY(-24px) scale(0.85);
-    }
-    60% {
-        opacity: 1;
-        transform: translateY(4px) scale(1.03);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-@keyframes game-welcome-logo-pulse {
-    0%, 100% {
-        transform: scale(1) rotate(0deg);
-    }
-    50% {
-        transform: scale(1.15) rotate(-4deg);
-    }
-}
-
-.game-welcome {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    text-align: center;
-    animation: game-intro-fade-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.game-welcome__logo {
-    width: 90px;
-    animation: game-welcome-logo-pulse 1.4s ease-in-out infinite;
-}
-
-.game-welcome__title {
-    font-family: var(--font-display);
-    font-size: 1.6rem;
-    color: var(--color-accent);
-}
-
-.game-welcome__subtitle {
-    font-size: 1.25rem;
-    font-weight: 700;
-}
-
-.game-rules-screen {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    animation: game-intro-fade-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.game-rules-screen__title {
-    text-align: center;
-    font-size: 1.2rem;
-    margin: 0 0 1.25rem;
-    color: var(--color-accent);
-}
-
-.game-rules-screen__list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.game-rules-screen__list li {
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    background-color: var(--color-bg);
-    font-size: 1.05rem;
-    text-align: center;
-    animation: game-intro-fade-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
-}
-
-.game-rules-screen__list li:nth-child(2) {
-    animation-delay: 0.15s;
-}
-
-.game-rules-screen__list li:nth-child(3) {
-    animation-delay: 0.3s;
-}
-
-.game-player__rules {
-    font-size: 1.1rem;
-    font-weight: 600;
-    line-height: 1.5;
-    max-width: 100%;
-}
-
-.game-timer-ring {
+/* Les écrans du jeu sont en position fixe (voir .theme-preview-screen
+   dans theme-preview.css), donc ils ignorent la présence de la nav du
+   site dans le flux normal de la page — on s'assure juste qu'elle reste
+   visible par-dessus. */
+body.game-fullscreen .site-header {
     position: relative;
-    width: 160px;
-    height: 160px;
-}
-
-.game-timer-ring__svg {
-    width: 100%;
-    height: 100%;
-    transform: rotate(-90deg);
-}
-
-.game-timer-ring__track {
-    fill: none;
-    stroke: var(--color-bg);
-    stroke-width: 8;
-}
-
-.game-timer-ring__progress {
-    fill: none;
-    stroke: var(--color-accent);
-    stroke-width: 8;
-    stroke-linecap: round;
-}
-
-.game-timer-ring.is-counting {
-    animation: game-timer-pulse 2s ease-in-out infinite;
-}
-
-@keyframes game-timer-pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.04);
-    }
-}
-
-.game-timer-ring__label {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.75rem;
-    font-weight: 800;
-    color: var(--color-text);
-    font-variant-numeric: tabular-nums;
-}
-
-.game-timer-ring.is-counting .game-timer-ring__label {
-    color: var(--color-accent);
+    z-index: 10000;
 }
 
 .game-player__yt-target {
@@ -284,53 +38,71 @@
     pointer-events: none;
 }
 
-.game-reveal {
-    text-align: center;
+/* Vraie pause : gèle toutes les animations CSS en cours, sans exception,
+   pile où elles en sont — reprennent pile au même point à la relance.
+   N'importe quel thème peut ajouter ses propres animations, elles seront
+   automatiquement gelées elles aussi grâce à cette règle globale.
+   IMPORTANT : le sélecteur universel "*" seul ne cible QUE les vrais
+   éléments du DOM, jamais les pseudo-éléments ::before/::after — or une
+   bonne partie des décors de thème (ex: les anneaux/coins qui tournent
+   sur l'écran d'accueil du thème "default") sont justement animés via
+   ::before/::after. Sans les lister ici explicitement, la pause semble
+   ne rien faire sur ces écrans (l'animation continue en silence). */
+body.is-game-paused *,
+body.is-game-paused *::before,
+body.is-game-paused *::after {
+    animation-play-state: paused !important;
 }
 
-.game-reveal p {
-    font-size: 1.15rem;
-    margin: 0 0 0.35rem;
+/* Rien de tout ça ne doit apparaître dans la vidéo enregistrée — mais
+   reste normalement visible tout le reste du temps. */
+body.is-recording-mode .site-header,
+body.is-recording-mode .game-admin-bar {
+    display: none !important;
 }
 
-.game-btn-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin: 1.25rem 0 0;
+/* Barre de contrôle du vrai jeu : en bas à gauche, commune à tous les
+   thèmes (ici, pas dans un fichier de thème). Style propre (fond foncé,
+   boutons dégradé rose/violet), pas celui, plus neutre, de la
+   prévisualisation. */
+.game-admin-bar {
+    left: 24px;
+    bottom: 24px;
+    transform: none;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(20, 14, 32, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
 }
 
-.game-btn-row--center {
-    justify-content: center;
+.game-admin-bar .theme-preview-nav__btn {
+    background: linear-gradient(135deg, #ff62b2, #9c65ff);
+    border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-.game-list__heading {
-    font-size: 1.4rem;
+.game-admin-bar .theme-preview-nav__btn:hover {
+    background: linear-gradient(135deg, #ff62b2, #9c65ff);
+    filter: brightness(1.12);
+}
+
+.game-record-start-btn {
+    position: fixed;
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%);
+    z-index: 9999;
+    padding: 0.75rem 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ff62b2, #9c65ff);
+    color: #ffffff;
+    font-size: 1rem;
     font-weight: 700;
+    cursor: pointer;
 }
 
-.game-list {
-    width: 100%;
-    max-width: 600px;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.game-list__item {
-    text-align: center;
-}
-
-.game-list__title {
-    font-size: 1.2rem;
-    margin: 0 0 0.5rem;
-}
-
-.game-list__item .btn {
-    margin: 0.75rem 0 0;
-}
-
-.game-result-title {
-    font-size: 1.6rem;
-    margin: 0 0 0.75rem;
+.game-record-start-btn:hover {
+    filter: brightness(1.1);
 }

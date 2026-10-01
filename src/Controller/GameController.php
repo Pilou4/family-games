@@ -12,12 +12,23 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class GameController extends AbstractController
 {
+    /**
+     * Thèmes réellement développés — tout blind test dont le thème n'est
+     * pas dans cette liste (ou n'a pas de thème) retombe sur "default".
+     * Le fichier templates/game/themes/{slug}.html.twig doit exister pour
+     * chaque entrée ici.
+     */
+    private const AVAILABLE_THEME_SLUGS = [
+        'default',
+        'anniversaire',
+    ];
+
     #[Route('/game', name: 'game')]
     public function index(BlindTestRepository $blindTestRepository): Response
     {
         $blindTests = array_filter(
             $blindTestRepository->findAll(),
-            static fn (BlindTest $blindTest): bool => !$blindTest->getQuestions()->isEmpty()
+            static fn(BlindTest $blindTest): bool => !$blindTest->getQuestions()->isEmpty()
         );
 
         return $this->render('game/index.html.twig', [
@@ -25,42 +36,26 @@ final class GameController extends AbstractController
         ]);
     }
 
-    #[Route('/game/{gameId}/host', name: 'game_host')]
-    public function host(string $gameId): Response
-    {
-        return $this->render('game/host.html.twig', [
-            'gameId' => $gameId,
-        ]);
-    }
-
-    #[Route('/game/{gameId}/join', name: 'game_join')]
-    public function join(string $gameId): Response
-    {
-        return $this->render('game/join.html.twig', [
-            'gameId' => $gameId,
-        ]);
-    }
-
-    /**
-     * Toute la partie se déroule sur cette seule page : les morceaux sont
-     * embarqués en JSON et enchaînés en JS, sans rechargement de page, pour
-     * que le son puisse continuer à se lancer automatiquement après le
-     * premier clic (les navigateurs bloquent l'autoplay avec son après un
-     * changement de page).
-     */
     #[Route('/game/{gameId}/play', name: 'game_play', methods: ['GET'])]
-    public function play(#[MapEntity(id: 'gameId')] BlindTest $blindTest, Request $request): Response
-    {
+    public function play(
+        #[MapEntity(id: 'gameId')] BlindTest $blindTest,
+        Request $request,
+    ): Response {
         if ($blindTest->getQuestions()->isEmpty()) {
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('game');
+        }
+
+        $themeSlug = $blindTest->getTheme()?->getSlug();
+        if (null === $themeSlug || !in_array($themeSlug, self::AVAILABLE_THEME_SLUGS, true)) {
+            $themeSlug = 'default';
         }
 
         $tracks = [];
         foreach ($blindTest->getQuestions() as $question) {
             $tracks[] = [
                 'source' => $question->getSource(),
-                'youtubeId' => $question->getYoutubeId(),
                 'mp3Src' => $question->getMp3Path() ? '/' . $question->getMp3Path() : null,
+                'youtubeId' => $question->getYoutubeId(),
                 'startTime' => $question->getStartTime(),
                 'duration' => $blindTest->getDuration(),
                 'artist' => $question->getArtist(),
@@ -71,17 +66,10 @@ final class GameController extends AbstractController
 
         return $this->render('game/play.html.twig', [
             'blindTest' => $blindTest,
-            'tracks' => $tracks,
-            'total' => count($tracks),
+            'themeSlug' => $themeSlug,
             'isPreview' => '1' === $request->query->get('preview'),
-        ]);
-    }
-
-    #[Route('/game/{gameId}/result', name: 'game_result', methods: ['GET'])]
-    public function result(#[MapEntity(id: 'gameId')] BlindTest $blindTest): Response
-    {
-        return $this->render('game/result.html.twig', [
-            'blindTest' => $blindTest,
+            'tracksJson' => json_encode($tracks, JSON_THROW_ON_ERROR),
+            'requiredFieldsJson' => json_encode($blindTest->getRequiredFields(), JSON_THROW_ON_ERROR),
         ]);
     }
 }
