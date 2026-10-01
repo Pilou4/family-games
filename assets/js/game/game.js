@@ -167,50 +167,43 @@ export function togglePause() {
 }
 
 /**
- * Filet de sécurité : les boutons précédent/suivant ne sont pas encore
- * bloqués pendant une pause (ce sera pour une prochaine étape) — on peut
- * donc aujourd'hui cliquer "pause" PUIS "suivant", ce qui change d'écran
- * sans jamais repasser par "lecture". Sans ce filet, ça laissait le jeu
- * bloqué en interne sur state.isPaused=true alors que tout semblait
- * normal à l'écran, et aussi des bribes de "ce qui jouait avant la
- * pause" (position du morceau, pistes audio marquées) qui ne servaient
- * plus à rien mais restaient en mémoire — un futur clic sur pause (même
- * bien plus tard, sur l'écran de fin) pouvait alors relire un son resté
- * accroché à ces restes.
- *
- * Aucun écran ne peut changer tout seul pendant une VRAIE pause (tous
- * les minuteurs qui font avancer le jeu sont gelés) — donc si
- * 'game:screenchange' se déclenche alors que state.isPaused est encore
- * true, c'est forcément parce que précédent/suivant a été utilisé
- * pendant la pause. On en sort alors proprement : remise à zéro de
- * l'icône et du fond, et oubli de tout ce qui pouvait rester en
- * attente — sans rien relancer au hasard (chaque écran/thème remet son
- * propre son dans le bon état tout seul, via ses propres règles).
+ * Sortie propre de l'état pause : remise à zéro de l'icône et du fond,
+ * oubli de tout ce qui pouvait rester en attente (position mémorisée,
+ * pistes audio marquées "coupées par la pause") et dégel de tous les
+ * minuteurs pausables — sans rien relancer au hasard (chaque écran/
+ * thème remet son propre son dans le bon état tout seul, via ses
+ * propres règles). Centralisé ici pour qu'il n'y ait qu'un seul endroit
+ * à tenir à jour si ce comportement doit évoluer.
+ */
+function exitPauseState() {
+    state.isPaused = false;
+    state.pausedPlaybackPosition = null;
+    document.body.classList.remove('is-game-paused');
+    if (pauseIconEl) {
+        pauseIconEl.innerHTML = PAUSE_ICON;
+    }
+    document.querySelectorAll('audio').forEach((el) => {
+        delete el.dataset.pausedByGame;
+    });
+    resumeAllTimers();
+}
+
+/**
+ * Filet de sécurité : si jamais un changement d'écran survient alors que
+ * state.isPaused est encore true (ex: un futur appel qui changerait
+ * d'écran pendant une pause sans passer par goBack()/goForward()
+ * ci-dessous), on sort proprement de la pause plutôt que de rester
+ * bloqué en interne dessus alors que tout semble normal à l'écran.
+ * Devenu secondaire depuis que goBack()/goForward() appellent déjà
+ * exitPauseState() directement (voir plus bas) — gardé en filet
+ * supplémentaire, sans rien changer à son comportement.
  */
 function bindScreenChangeSafetyNet() {
     document.addEventListener('game:screenchange', () => {
         if (!state.isPaused) {
             return;
         }
-
-        state.isPaused = false;
-        state.pausedPlaybackPosition = null;
-        document.body.classList.remove('is-game-paused');
-        if (pauseIconEl) {
-            pauseIconEl.innerHTML = PAUSE_ICON;
-        }
-        document.querySelectorAll('audio').forEach((el) => {
-            delete el.dataset.pausedByGame;
-        });
-        // L'écran qui vient de s'afficher peut avoir créé, au passage,
-        // un tout nouveau minuteur pausable (ex: celui qui fera avancer
-        // tout seul cet écran) — comme state.isPaused valait encore true
-        // pile à cet instant, ce minuteur est né gelé (voir
-        // createPausableTimeout dans pausable.js). Il faut donc aussi le
-        // relâcher ici, sinon il resterait bloqué pour toujours (plus
-        // aucun bouton "lecture" à venir ne le concernerait, puisque le
-        // jeu se croit déjà "en lecture" depuis la ligne au-dessus).
-        resumeAllTimers();
+        exitPauseState();
     });
 }
 
@@ -237,7 +230,24 @@ function withNavLock(action) {
     });
 }
 
+/**
+ * Précédent/suivant utilisé PENDANT une pause : on sort explicitement de
+ * l'état pause avant d'exécuter la navigation elle-même, au lieu de
+ * compter uniquement sur l'événement 'game:screenchange' (voir
+ * bindScreenChangeSafetyNet ci-dessus) — certains écrans (transition,
+ * chrono, réponse) sont le MÊME élément DOM réutilisé d'un morceau à
+ * l'autre, donc le changer pour un morceau différent ne le fait pas
+ * forcément ressortir de "is-active" à un instant donné (showScreen()
+ * ne fait rien s'il est déjà actif), et l'événement ne se déclenche
+ * alors pas. Résultat observé : la lecture reprenait bien, mais le
+ * bouton restait affiché "pause" — appeler ceci ici, avant la
+ * navigation, garantit que le bouton et l'état interne sont toujours
+ * synchronisés, quel que soit l'écran de destination.
+ */
 function goBack() {
+    if (state.isPaused) {
+        exitPauseState();
+    }
     if (state.currentBackAction) {
         state.currentBackAction();
     } else {
@@ -246,6 +256,9 @@ function goBack() {
 }
 
 function goForward() {
+    if (state.isPaused) {
+        exitPauseState();
+    }
     if (state.currentSkipAction) {
         state.currentSkipAction();
     } else {

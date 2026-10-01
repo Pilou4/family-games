@@ -1,5 +1,5 @@
 import { screensRoot } from './dom.js';
-import { state, tracks, blindTestName, blindTestDescription, questionCount, trackDuration, requiredFields, DEFAULT_SCREEN_DURATION } from './state.js';
+import { state, tracks, blindTestName, blindTestDescription, questionCount, trackDuration, requiredFields, DEFAULT_SCREEN_DURATIONS, DEFAULT_SCREEN_DURATION } from './state.js';
 import { stopCountdownEarly } from './timer.js';
 import { playMp3, playYoutube, stopAllPlayback } from './playback.js';
 import { createPausableTimeout, clearPausableTimeout } from './pausable.js';
@@ -18,9 +18,27 @@ function findScreen(key) {
     return screensRoot.querySelector(`[data-screen="${key}"]`);
 }
 
+/**
+ * Durée d'affichage (ms) d'un écran : priorité à data-screen-duration
+ * s'il est posé sur l'écran par le thème (surcharge volontaire, par
+ * exemple pour une animation ou un message plus long sur CE thème),
+ * sinon la valeur par défaut DE CETTE PAGE (DEFAULT_SCREEN_DURATIONS,
+ * voir state.js — une valeur par type d'écran, pas une seule valeur pour
+ * tous), et en tout dernier recours DEFAULT_SCREEN_DURATION si jamais ce
+ * type d'écran n'a même pas d'entrée.
+ */
 function screenDuration(el) {
-    const declared = el ? parseInt(el.dataset.screenDuration, 10) : NaN;
-    return Number.isNaN(declared) ? DEFAULT_SCREEN_DURATION : declared;
+    if (!el) {
+        return DEFAULT_SCREEN_DURATION;
+    }
+
+    const declared = parseInt(el.dataset.screenDuration, 10);
+    if (!Number.isNaN(declared)) {
+        return declared;
+    }
+
+    const perPageDefault = DEFAULT_SCREEN_DURATIONS[el.dataset.screen];
+    return undefined !== perPageDefault ? perPageDefault : DEFAULT_SCREEN_DURATION;
 }
 
 function showScreen(el) {

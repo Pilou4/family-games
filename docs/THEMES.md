@@ -90,12 +90,20 @@ Attributs à poser sur chaque `<section>` :
 - `data-screen="welcome"` (etc.) — identifiant unique de l'écran, repris
   par tout le JS (commun et celui du thème).
 - `data-screen-duration="6500"` — durée d'affichage en millisecondes
-  pour les écrans qui s'enchaînent tout seuls (intro : `presentation` à
-  `start` ; fin : `end` à `thanks`). Absent = 5000ms par défaut
-  (`DEFAULT_SCREEN_DURATION` dans `assets/js/game/state.js`). Les écrans
-  `timer` et `transition` n'ont pas besoin d'une durée arbitraire : `timer`
-  dure le temps réel de la chanson, `transition` peut en avoir une mais
-  sert surtout de petit sas avant le lancement de la lecture.
+  pour les écrans qui s'enchaînent tout seuls (intro : `welcome` à
+  `start` ; fin : `end` à `thanks` ; aussi `reveal`). **Optionnel** :
+  chaque écran a déjà une durée par défaut (voir
+  `DEFAULT_SCREEN_DURATIONS` dans `assets/js/game/state.js`, une valeur
+  par type d'écran — `welcome`, `description`, `rules`, `start`,
+  `transition`, `reveal`, `end`, `thanks`), posée ici simplement pour que
+  TOUS les thèmes aient un rythme cohérent sans que chacun ait à la
+  redéfinir. Un thème ne pose `data-screen-duration` sur un écran QUE
+  s'il veut une durée différente de ce défaut pour CET écran précis (ex:
+  une animation ou un message plus long sur ce thème) — sinon on laisse
+  l'attribut absent, le défaut de la page s'applique tout seul. `timer`
+  n'a pas d'entrée : il dure le temps réel de la chanson, jamais une
+  durée fixe. `presentation` n'en a pas non plus : jamais minuté dans le
+  vrai jeu (prévisualisation uniquement).
 - `data-preview-only="true"` — uniquement sur `presentation`. Le rend
   visible en prévisualisation (cycle avec les flèches) mais jamais dans le
   vrai jeu.
