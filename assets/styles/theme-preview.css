@@ -74,6 +74,9 @@ body.theme-preview .site-header {
 }
 
 .theme-preview-nav__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 48px;
     height: 48px;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -84,6 +87,15 @@ body.theme-preview .site-header {
     cursor: pointer;
     backdrop-filter: blur(10px);
     transition: transform 0.2s ease, background 0.2s ease;
+}
+
+/* Icônes SVG (fichiers public/images/icones/, injectés via inline_svg() —
+   voir src/Twig/SvgExtension.php) : pas de width/height dans le fichier
+   lui-même (pour rester réutilisable ailleurs), donc la taille d'affichage
+   est fixée ici, en CSS. */
+.theme-preview-nav__btn svg {
+    width: 18px;
+    height: 18px;
 }
 
 .theme-preview-nav__btn:hover {

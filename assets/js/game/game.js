@@ -14,6 +14,13 @@ import { startRecording, stopRecording } from './recording.js';
 const PLAY_ICON = '<path d="M8 5v14l11-7z"/>';
 const PAUSE_ICON = '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>';
 
+// Délai d'inactivité avant que la barre de contrôle ne s'efface (voir
+// bindAdminBarIdleFade plus bas) — déclaré ici, tout en haut, car init()
+// est appelé dès le chargement du module (voir plus bas), avant que le
+// reste du fichier ne soit exécuté : une constante déclarée plus loin
+// dans le fichier n'est pas encore accessible à ce moment-là.
+const ADMIN_BAR_IDLE_DELAY_MS = 3000;
+
 const isPreview = Boolean(game) && game.dataset.isPreview === '1';
 
 // Devient true au premier clic sur "Lecture" (nécessaire : les
@@ -33,11 +40,16 @@ function init() {
     bindButtons();
     bindKeyboardShortcuts();
     bindScreenChangeSafetyNet();
+    bindAdminBarIdleFade();
 
     if (adminBarEl) {
         adminBarEl.hidden = false;
     }
 
+    // Un seul bouton pour l'enregistrement : "Enregistrer" (le ⏺ de la
+    // barre). Clic dessus = démarre tout de suite (voir bindButtons) ; le
+    // bouton disparaît au même instant, en même temps que toute la barre
+    // de contrôle (masquée pendant l'enregistrement, voir game.css).
     if (isPreview && recordBtn) {
         recordBtn.hidden = false;
     }
@@ -266,6 +278,40 @@ function goForward() {
     }
 }
 
+/**
+ * Effet "lecteur vidéo" : la barre de contrôle s'efface en douceur
+ * (opacity, voir .game-admin-bar--idle dans game.css) après un moment
+ * sans bouger la souris, et réapparaît aussitôt au moindre mouvement —
+ * puis s'efface de nouveau si la souris s'arrête à nouveau. Délai choisi
+ * à 3 secondes (ADMIN_BAR_IDLE_DELAY_MS, voir en haut du fichier), assez
+ * court pour ne pas gêner tant qu'on bouge la souris, assez long pour ne
+ * pas clignoter pendant une lecture normale.
+ */
+function bindAdminBarIdleFade() {
+    if (!adminBarEl) {
+        return;
+    }
+
+    let idleTimer = null;
+
+    const scheduleIdle = () => {
+        if (idleTimer) {
+            clearTimeout(idleTimer);
+        }
+        idleTimer = setTimeout(() => {
+            adminBarEl.classList.add('game-admin-bar--idle');
+        }, ADMIN_BAR_IDLE_DELAY_MS);
+    };
+
+    const wakeUp = () => {
+        adminBarEl.classList.remove('game-admin-bar--idle');
+        scheduleIdle();
+    };
+
+    document.addEventListener('mousemove', wakeUp);
+    scheduleIdle();
+}
+
 function bindButtons() {
     if (prevBtn) {
         prevBtn.addEventListener('click', () => withNavLock(goBack));
@@ -279,13 +325,38 @@ function bindButtons() {
         nextBtn.addEventListener('click', () => withNavLock(goForward));
     }
 
+    // "Enregistrer" (⏺) : démarre directement l'enregistrement. Caché
+    // tout de suite au clic (en plus du masquage de toute la barre de
+    // contrôle pendant l'enregistrement, voir game.css) pour qu'il
+    // disparaisse à l'instant même du clic, sans attendre quoi que ce
+    // soit. Réapparaît tout seul à l'arrêt (voir recording.js).
     if (recordBtn) {
         recordBtn.addEventListener('click', () => {
             if (state.mediaRecorder && state.mediaRecorder.state === 'recording') {
                 stopRecording();
             } else {
+                recordBtn.hidden = true;
                 startRecording();
+                // Toute la barre de contrôle disparaît pendant
+                // l'enregistrement — y compris le bouton Lecture. S'il n'y
+                // a pas encore de partie en cours, "Commencer" prend le
+                // relais comme seul moyen visible de lancer le blind test
+                // (sinon, pas besoin : la partie tourne déjà).
+                if (!hasStarted && recordStartBtn) {
+                    recordStartBtn.hidden = false;
+                }
             }
+        });
+    }
+
+    // "Commencer" : lance le blind test (même action que le tout premier
+    // clic sur le bouton Lecture) — n'est visible que pendant un
+    // enregistrement démarré avant le début de la partie, voir ci-dessus.
+    // Disparaît immédiatement au clic.
+    if (recordStartBtn) {
+        recordStartBtn.addEventListener('click', () => {
+            recordStartBtn.hidden = true;
+            togglePause();
         });
     }
 }

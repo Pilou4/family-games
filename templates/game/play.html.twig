@@ -39,11 +39,11 @@
         </div>
 
         <div class="theme-preview-nav game-admin-bar" id="game-admin-bar" hidden>
-            <button type="button" class="theme-preview-nav__btn" id="game-prev-btn" aria-label="Précédent" title="Précédent">←</button>
+            <button type="button" class="theme-preview-nav__btn" id="game-prev-btn" aria-label="Précédent" title="Précédent">{{ inline_svg('images/icones/arrow-prev.svg') }}</button>
             <button type="button" class="theme-preview-nav__btn" id="game-pause-btn" aria-label="Lecture / Pause" title="Lecture / Pause">
                 <svg id="game-pause-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             </button>
-            <button type="button" class="theme-preview-nav__btn" id="game-next-btn" aria-label="Avance" title="Avance">→</button>
+            <button type="button" class="theme-preview-nav__btn" id="game-next-btn" aria-label="Avance" title="Avance">{{ inline_svg('images/icones/arrow-next.svg') }}</button>
             {% if isPreview %}
                 <button type="button" class="theme-preview-nav__btn game-admin-bar__record" id="game-record-btn" aria-label="Enregistrer" title="Enregistrer">⏺</button>
             {% endif %}
