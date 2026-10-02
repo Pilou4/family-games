@@ -42,7 +42,13 @@
 </section>
 
 {# ---- Page 3 : Règles du jeu ---- #}
-<section class="theme-preview-screen" data-screen="rules">
+{# data-screen-duration : surcharge la durée par défaut de cet écran
+   (voir DEFAULT_SCREEN_DURATIONS dans assets/js/game/state.js), ICI
+   SEULEMENT, pour laisser le temps aux voix synchronisées (voir
+   playRulesVoiceSequence dans anniversaire.js) de toutes se terminer
+   avant de passer à l'écran suivant. Les autres thèmes ne sont pas
+   concernés, ils gardent la durée par défaut. #}
+<section class="theme-preview-screen" data-screen="rules" data-screen-duration="11500">
     <div class="birthday-rules-page">
         <div class="birthday-rules-card">
             <div class="birthday-rules-decoration one"></div>
@@ -141,6 +147,8 @@
             <span></span><span></span><span></span><span></span><span></span>
         </div>
 
+        <div class="birthday-page-5-label">EXTRAIT N°</div>
+
         <div class="birthday-page-5-medallion">
             <div class="birthday-page-5-number" data-game-value="track-number">1</div>
         </div>
@@ -231,6 +239,41 @@
             <h1 class="birthday-page-8-title">BRAVO À TOUS !</h1>
             <div class="birthday-page-8-line"></div>
             <div class="birthday-page-8-subtitle">LE BLIND TEST EST TERMINÉ</div>
+        </div>
+
+        <div class="birthday-page-8-balloons" aria-hidden="true">
+            <span class="birthday-page-8-balloon b1">🎈</span>
+            <span class="birthday-page-8-balloon b2">🎈</span>
+            <span class="birthday-page-8-balloon b3">🎈</span>
+            <span class="birthday-page-8-balloon b4">🎈</span>
+            <span class="birthday-page-8-balloon b5">🎈</span>
+            <span class="birthday-page-8-balloon b6">🎈</span>
+            <span class="birthday-page-8-balloon b7">🎈</span>
+            <span class="birthday-page-8-balloon b8">🎈</span>
+            <span class="birthday-page-8-balloon b9">🎈</span>
+            <span class="birthday-page-8-balloon b10">🎈</span>
+            <span class="birthday-page-8-balloon b11">🎈</span>
+            <span class="birthday-page-8-balloon b12">🎈</span>
+            <span class="birthday-page-8-balloon b13">🎈</span>
+            <span class="birthday-page-8-balloon b14">🎈</span>
+            <span class="birthday-page-8-balloon b15">🎈</span>
+            <span class="birthday-page-8-balloon b16">🎈</span>
+            <span class="birthday-page-8-balloon b17">🎈</span>
+            <span class="birthday-page-8-balloon b18">🎈</span>
+            <span class="birthday-page-8-balloon b19">🎈</span>
+            <span class="birthday-page-8-balloon b20">🎈</span>
+            <span class="birthday-page-8-balloon b21">🎈</span>
+            <span class="birthday-page-8-balloon b22">🎈</span>
+            <span class="birthday-page-8-balloon b23">🎈</span>
+            <span class="birthday-page-8-balloon b24">🎈</span>
+            <span class="birthday-page-8-balloon b25">🎈</span>
+            <span class="birthday-page-8-balloon b26">🎈</span>
+            <span class="birthday-page-8-balloon b27">🎈</span>
+            <span class="birthday-page-8-balloon b28">🎈</span>
+            <span class="birthday-page-8-balloon b29">🎈</span>
+            <span class="birthday-page-8-balloon b30">🎈</span>
+            <span class="birthday-page-8-balloon b31">🎈</span>
+            <span class="birthday-page-8-balloon b32">🎈</span>
         </div>
     </div>
 </section>

@@ -109,6 +109,219 @@ function createCandleController(candleEl) {
 }
 
 /* ==========================================================================
+   VOIX SYNCHRONISÉES — écran "Règles du jeu" (propre à ce thème, voir la
+   garde en haut de fichier : ce code ne tourne jamais sur un autre thème).
+   ----------------------------------------------------------------------
+   Les fichiers sont déjà présents dans public/voix/ (rien à générer ici) :
+   un fichier fixe pour le titre et pour chaque ligne "point", et un
+   fichier par valeur possible pour les lignes dynamiques (nombre de
+   chansons, durée d'un extrait) — ex: "9-chansons.mp3",
+   "15-sec-par-extrait.mp3". Le minutage de lecture de chaque ligne est
+   calé sur son délai d'apparition CSS (voir .birthday-rule:nth-child(N)
+   et .birthday-rules-title dans anniversaire.css) pour rester synchrone
+   avec le texte qui apparaît.
+   ========================================================================== */
+
+/** "1-chanson.mp3" au singulier, "N-chansons.mp3" au pluriel ; null si hors
+ *  plage (fichiers disponibles de 1 à 69 chansons) — la ligne reste
+ *  silencieuse plutôt que de planter sur un fichier manquant. */
+function questionCountVoiceFile(count) {
+    if (!Number.isFinite(count) || count < 1) {
+        return null;
+    }
+    if (1 === count) {
+        return '1-chanson.mp3';
+    }
+    return count <= 69 ? `${count}-chansons.mp3` : null;
+}
+
+/** "N-sec-par-extrait.mp3" ; null si hors plage (fichiers disponibles de
+ *  10 à 20 secondes seulement) — même logique de repli silencieux. */
+function durationVoiceFile(duration) {
+    if (!Number.isFinite(duration)) {
+        return null;
+    }
+    return (duration >= 10 && duration <= 20) ? `${duration}-sec-par-extrait.mp3` : null;
+}
+
+/**
+ * Crée un contrôleur de voix indépendant (son propre <audio>, son propre
+ * jeu de minuteurs) — un par contexte (prévisualisation / vrai jeu), les
+ * deux ne tournant jamais en même temps sur la même page.
+ */
+function createRulesVoiceController() {
+    const audio = document.createElement('audio');
+    audio.preload = 'auto';
+    document.body.appendChild(audio);
+
+    let timers = [];
+
+    function stop() {
+        timers.forEach((id) => clearTimeout(id));
+        timers = [];
+        audio.pause();
+        audio.currentTime = 0;
+    }
+
+    function playFile(fileName) {
+        audio.pause();
+        audio.src = `/voix/${fileName}`;
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+    }
+
+    /**
+     * Lance la séquence complète pour l'écran "rules" passé en argument.
+     * Lit les valeurs dynamiques (nombre de chansons, durée) directement
+     * dans son DOM, et ne joue une ligne "point" que si elle n'est pas
+     * masquée (data-rules-point, caché par screens.js quand ce critère
+     * n'est pas coché pour ce blind test — voir setRulesPointVisible).
+     */
+    function playSequence(rulesScreenEl) {
+        stop();
+
+        if (!rulesScreenEl) {
+            return;
+        }
+
+        const questionCountEl = rulesScreenEl.querySelector('[data-game-value="question-count"]');
+        const durationEl = rulesScreenEl.querySelector('[data-game-value="duration"]');
+        const questionCount = questionCountEl ? parseInt(questionCountEl.textContent, 10) : NaN;
+        const duration = durationEl ? parseInt(durationEl.textContent, 10) : NaN;
+
+        const pointFiles = {
+            title: '1-point-pour-le-titre.mp3',
+            artist: '1-point-pour-artiste.mp3',
+            year: '1-point-pour-annee.mp3',
+        };
+        // Délais alignés sur .birthday-rule:nth-child(3/4/5) dans
+        // anniversaire.css : fixes, quelle que soit la ligne masquée ou
+        // non (nth-child compte la position réelle dans le HTML, pas
+        // seulement les lignes visibles). Espacés d'environ 1.75-2s les
+        // uns des autres pour laisser à chaque voix le temps de se
+        // terminer avant que la ligne suivante n'apparaisse (la plus
+        // longue dure jusqu'à ~1.8s) — voir le même commentaire côté CSS.
+        const pointDelays = { title: 6200, artist: 7850, year: 9500 };
+
+        const sequence = [
+            { delay: 1050, file: 'regles-du-jeu.mp3' },
+            { delay: 2400, file: questionCountVoiceFile(questionCount) },
+            { delay: 4150, file: durationVoiceFile(duration) },
+        ];
+
+        ['title', 'artist', 'year'].forEach((key) => {
+            const lineEl = rulesScreenEl.querySelector(`[data-rules-point="${key}"]`);
+            if (lineEl && !lineEl.hidden) {
+                sequence.push({ delay: pointDelays[key], file: pointFiles[key] });
+            }
+        });
+
+        sequence
+            .filter((entry) => null !== entry.file)
+            .forEach((entry) => {
+                timers.push(setTimeout(() => playFile(entry.file), entry.delay));
+            });
+    }
+
+    return { playSequence, stop };
+}
+
+/**
+ * Joue la voix "C'est parti !" (public/voix/cest-partie.mp3), calée sur
+ * l'apparition du titre de l'écran "start" (voir .birthday-start-title
+ * dans anniversaire.css, dont l'animation démarre à .55s) — même
+ * principe que createRulesVoiceController ci-dessus, en plus simple
+ * puisqu'il n'y a qu'une seule ligne, fixe (pas de valeur dynamique).
+ */
+function createStartVoiceController() {
+    const audio = document.createElement('audio');
+    audio.preload = 'auto';
+    document.body.appendChild(audio);
+
+    let timer = null;
+
+    function stop() {
+        if (timer) {
+            clearTimeout(timer);
+            timer = null;
+        }
+        audio.pause();
+        audio.currentTime = 0;
+    }
+
+    function play() {
+        stop();
+        timer = setTimeout(() => {
+            audio.src = '/voix/cest-partie.mp3';
+            audio.currentTime = 0;
+            audio.play().catch(() => {});
+        }, 550);
+    }
+
+    return { play, stop };
+}
+
+/** "extrait-numero-N.mp3" ; null si hors plage (fichiers disponibles de 1
+ *  à 69) — la ligne reste silencieuse plutôt que de planter. */
+function extraitNumeroVoiceFile(number) {
+    if (!Number.isFinite(number) || number < 1) {
+        return null;
+    }
+    return number <= 69 ? `extrait-numero-${number}.mp3` : null;
+}
+
+/**
+ * Joue la voix "Extrait numéro X" (public/voix/extrait-numero-N.mp3),
+ * calée sur l'apparition du gros numéro de l'écran "transition" (voir
+ * .birthday-page-5-number dans anniversaire.css, dont l'animation
+ * démarre à .15s, label juste avant à .2s).
+ *
+ * Important : dans le vrai jeu, la valeur (data-game-value="track-number")
+ * est écrite par screens.js JUSTE APRÈS l'envoi de l'événement
+ * 'game:screenchange' (voir goToTransition) — donc PAS encore disponible
+ * au moment où ce gestionnaire est appelé. On ne la lit qu'à l'intérieur
+ * du setTimeout ci-dessous, une fois le minuteur écoulé, jamais avant.
+ */
+function createExtraitVoiceController() {
+    const audio = document.createElement('audio');
+    audio.preload = 'auto';
+    document.body.appendChild(audio);
+
+    let timer = null;
+
+    function stop() {
+        if (timer) {
+            clearTimeout(timer);
+            timer = null;
+        }
+        audio.pause();
+        audio.currentTime = 0;
+    }
+
+    function play(transitionScreenEl) {
+        stop();
+
+        if (!transitionScreenEl) {
+            return;
+        }
+
+        timer = setTimeout(() => {
+            const numberEl = transitionScreenEl.querySelector('[data-game-value="track-number"]');
+            const number = numberEl ? parseInt(numberEl.textContent, 10) : NaN;
+            const file = extraitNumeroVoiceFile(number);
+            if (!file) {
+                return;
+            }
+            audio.src = `/voix/${file}`;
+            audio.currentTime = 0;
+            audio.play().catch(() => {});
+        }, 200);
+    }
+
+    return { play, stop };
+}
+
+/* ==========================================================================
    PRÉVISUALISATION : écoute les changements d'écran génériques
    ========================================================================== */
 
@@ -119,11 +332,15 @@ function initPreviewHooks() {
 
     let candleTimer = null;
     let candleController = null;
+    const rulesVoice = createRulesVoiceController();
+    const startVoice = createStartVoiceController();
+    const extraitVoice = createExtraitVoiceController();
 
     // La barre de contrôle musique (lecture, volume, son du "c'est
     // parti"...) est commune à tous les thèmes — voir
     // assets/js/theme-preview-player.js. Ce thème ne gère ici que ce qui
-    // lui est propre : les classes de fin d'animation et la bougie.
+    // lui est propre : les classes de fin d'animation, la bougie, et les
+    // voix des écrans "règles", "c'est parti" et "extrait n°".
 
     document.addEventListener('themepreview:screenchange', (event) => {
         const { key } = event.detail;
@@ -134,6 +351,24 @@ function initPreviewHooks() {
         if (candleTimer) {
             clearInterval(candleTimer);
             candleTimer = null;
+        }
+
+        if ('rules' === key) {
+            rulesVoice.playSequence(document.querySelector('[data-screen="rules"]'));
+        } else {
+            rulesVoice.stop();
+        }
+
+        if ('start' === key) {
+            startVoice.play();
+        } else {
+            startVoice.stop();
+        }
+
+        if ('transition' === key) {
+            extraitVoice.play(document.querySelector('[data-screen="transition"]'));
+        } else {
+            extraitVoice.stop();
         }
 
         if ('timer' === key) {
@@ -172,6 +407,9 @@ function initRealGameHooks() {
 
     let candleController = null;
     let candleObserver = null;
+    const rulesVoice = createRulesVoiceController();
+    const startVoice = createStartVoiceController();
+    const extraitVoice = createExtraitVoiceController();
 
     const music = document.createElement('audio');
     music.src = '/audio/theme-anniversaire/music.mp3';
@@ -204,10 +442,25 @@ function initRealGameHooks() {
             candleObserver = null;
         }
 
+        if ('rules' === key) {
+            rulesVoice.playSequence(document.querySelector('[data-screen="rules"]'));
+        } else {
+            rulesVoice.stop();
+        }
+
         if ('start' === key) {
             startSound.currentTime = 0;
             startSound.volume = 0.45;
             startSound.play().catch(() => {});
+            startVoice.play();
+        } else {
+            startVoice.stop();
+        }
+
+        if ('transition' === key) {
+            extraitVoice.play(document.querySelector('[data-screen="transition"]'));
+        } else {
+            extraitVoice.stop();
         }
 
         if ('timer' === key) {
